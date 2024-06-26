@@ -1,0 +1,60 @@
+﻿@model Esercizio_M4_W2_D3.Models.CinemaViewModel
+
+@{
+    ViewData["Title"] = "Cinema Multisala";
+}
+
+<h1>Gestione Vendita Biglietti</h1>
+
+<form asp-action="VendiBiglietto" method="post">
+    <div>
+        <label asp-for="Ospite.Nome" class="form-label"></label>
+        <input type="text" asp-for="Ospite.Nome" required class="form-control" />
+    </div>
+    <div>
+        <label asp-for="Ospite.Cognome" class="form-label"></label>
+        <input type="text" asp-for="Ospite.Cognome" class="form-control" required />
+    </div>
+    <div>
+        <label asp-for ="Ospite.Sala" class="form-label"></label>
+        <select asp-for="Ospite.Sala" class="form-select">
+            @foreach (var sala in Model.Sale)
+            {
+                <option value="@sala.Nome">@sala.Nome</option>
+            }
+        </select>
+    </div>
+    <div class="my-3 d-flex align-items-center gap-3">
+        <label asp-for="Ospite.TipoBiglietto" class="form-label m-0"></label>
+        <select asp-for="Ospite.TipoBiglietto">
+            <option value="Intero">Intero</option>
+            <option value="Ridotto">Ridotto</option>
+        </select>
+    <button class="btn btn-outline-info" type="submit">Vendi Biglietto</button>
+    </div>
+</form>
+
+<h2>Stato delle Sale</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Sala</th>
+            <th>Capienza Massima</th>
+            <th>Biglietti Venduti</th>
+            <th>Biglietti Ridotti</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var sala in Model.Sale)
+        {
+            <tr>
+                <td>@sala.Nome</td>
+                <td>@sala.CapienzaMassima</td>
+                <td>@sala.BigliettiVenduti</td>
+                <td>@sala.BigliettiRidotti</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
