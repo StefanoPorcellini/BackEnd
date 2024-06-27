@@ -2,39 +2,45 @@
 
 @{
     ViewData["Title"] = "Cinema Multisala";
-}
+ }
 
-<h1>Gestione Vendita Biglietti</h1>
 
-<form asp-action="VendiBiglietto" method="post">
-    <div>
-        <label asp-for="Ospite.Nome" class="form-label"></label>
-        <input type="text" asp-for="Ospite.Nome" required class="form-control" />
-    </div>
-    <div>
-        <label asp-for="Ospite.Cognome" class="form-label"></label>
-        <input type="text" asp-for="Ospite.Cognome" class="form-control" required />
-    </div>
-    <div>
-        <label asp-for ="Ospite.Sala" class="form-label"></label>
-        <select asp-for="Ospite.Sala" class="form-select">
-            @foreach (var sala in Model.Sale)
-            {
-                <option value="@sala.Nome">@sala.Nome</option>
-            }
-        </select>
-    </div>
-    <div class="my-3 d-flex align-items-center gap-3">
-        <label asp-for="Ospite.TipoBiglietto" class="form-label m-0"></label>
-        <select asp-for="Ospite.TipoBiglietto">
-            <option value="Intero">Intero</option>
-            <option value="Ridotto">Ridotto</option>
-        </select>
-    <button class="btn btn-outline-info" type="submit">Vendi Biglietto</button>
-    </div>
-</form>
+
 
 <h2>Stato delle Sale</h2>
+
+<div class="container">
+    <div class="row row-cols-3 gap-3 p-2">
+
+        @foreach (var sala in Model.Sale)
+        {
+            <div class="card p-2">
+                <div class="row g-0">
+                    <div class="col-md-4">
+                        <img src="@sala.Locandina" class="img-fluid rounded-start" alt="locandina film">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h3 class="card-title">@sala.Nome</h3>
+                            <h5 class="card-text">@sala.Titolo</h5>
+
+                            
+
+
+                            <p>POSTI RIMASTI: @sala.PostiRimasti</p>
+                           
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+    </div>
+</div>
+
+
+
+
 <table class="table">
     <thead>
         <tr>
@@ -42,6 +48,7 @@
             <th>Capienza Massima</th>
             <th>Biglietti Venduti</th>
             <th>Biglietti Ridotti</th>
+            <th>Posti Rimasti</th>
         </tr>
     </thead>
     <tbody>
@@ -52,6 +59,7 @@
                 <td>@sala.CapienzaMassima</td>
                 <td>@sala.BigliettiVenduti</td>
                 <td>@sala.BigliettiRidotti</td>
+                <td>@sala.PostiRimasti</td>
             </tr>
         }
     </tbody>

@@ -30,7 +30,6 @@ namespace Esercizio_M4_W2_D3.Controllers
             if (selectedSala != null && selectedSala.BigliettiVenduti < selectedSala.CapienzaMassima)
             {
                 CinemaData.Ospiti.Add(viewModel.Ospite);
-                selectedSala.CapienzaMassima--;
                 selectedSala.BigliettiVenduti++;
                 if (viewModel.Ospite.TipoBiglietto == TipoBiglietto.Ridotto)
                 {
@@ -38,11 +37,21 @@ namespace Esercizio_M4_W2_D3.Controllers
                 }
             }
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Biglietti");
+        }
+
+        public IActionResult Biglietti()
+        {
+            var viewModel = new CinemaViewModel
+            {
+                Sale = CinemaData.Sale,
+                Ospite = new Ospite()
+            };
+            return View(viewModel);
         }
 
         public IActionResult Privacy()
-        {
+        {            
             return View();
         }
 
