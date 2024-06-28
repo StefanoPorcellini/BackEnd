@@ -2,7 +2,7 @@
 @{
     ViewData["Title"] = "Scarpe & Co";
 }
-<div class="container-fluid text-center bg-warning shadow-sm text-white fst-italic fw-bold">
+<div class="container-fluid text-center shadow-sm text-white fst-italic fw-bold title">
     <h1>La Nostra Vetrina</h1>
 </div>
 <div class="container">
@@ -14,10 +14,10 @@
                 <div class="card-body d-flex flex-column">
                     <h4 class="card-title">@product.Brand</h4>
                     <h5 class>@product.Name</h5>
-                    <p class="card-text">@product.Description</p>
+                    <p class="card-text description">@product.ShortDescription</p>
                 </div>
                 <p class="card-title text-danger fw-bold fs-4 align-self-end">@product.Price €</p>
-                <a asp-action="Details" asp-route-id="@product.Id" class="btn btn-primary">Vedi Articolo</a>
+                <a asp-action="Details" asp-route-id="@product.Id" class="btn title text-white">Vedi Articolo</a>
             </div>
         }
 

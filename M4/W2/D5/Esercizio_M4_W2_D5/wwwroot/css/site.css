@@ -19,16 +19,15 @@ html {
 
 body {
     margin-bottom: 60px;
-    background-color:#eff6ff;
 }
 
 .card {
     width: 22%;
 }
 
-.card:hover {
-    border: 3px solid #258cfb;
-}
+    .card:hover {
+        border: 3px solid #7abcc1;
+    }
 
 .navbar {
     background-color: #e3f2fd;
@@ -37,4 +36,27 @@ body {
 .container-fluid{
     width: 90%;
     border-radius: 20px;
+}
+
+.control {
+    width: 20px;
+    background-color: gray;
+}
+
+.description{
+    text-align: justify;
+}
+
+::-webkit-scrollbar {
+    background-color: transparent;
+    width: 7px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #7abcc1;
+    border-radius: 1rem;
+}
+
+.title {
+    background-color: #7abcc1
 }

@@ -13,7 +13,7 @@ namespace Esercizio_M4_W2_D5.Services
             Name = "Air Zoom Vapor X",
             Price = 129.99m,
             Description = "Scarpe da tennis leggere e reattive con tecnologia Air Zoom.",
-            ImgCover = "nike_air_zoom_vapor_x.png",
+            ImgCover = "nike_air_zoom_vapor_x.webp",
             OtherImg = new List<string> { "nike_air_zoom_vapor_x_2.webp", "nike_air_zoom_vapor_x_3.webp" }
         },
         new Product
@@ -42,7 +42,7 @@ namespace Esercizio_M4_W2_D5.Services
             Brand = "Nike",
             Name = "Air Jordan 13 Retro",
             Price = 119.99m,
-            Description = "La Air Jordan 13 Retro 'Dune Red' presenta una tomaia in pelle bianca con sovrapposizioni in rete a fossette in una tonalità cremisi scuro. Il rivestimento in pelle scamosciata sintetica Terra Blush si estende all'intersuola leggera in Phylon, dotata di ammortizzazione Zoom Air nell'avampiede e nel tallone. Gli elementi del marchio includono il logo Jumpman ricamato sulla linguetta e un occhio olografico incastonato nel colletto laterale. Sotto il piede, la suola in gomma a zampa di pantera offre una trazione aderente..",
+            Description = "La Air Jordan 13 Retro 'Dune Red' presenta una tomaia in pelle bianca con sovrapposizioni in rete a fossette in una tonalità cremisi scuro. Il rivestimento in pelle scamosciata sintetica Terra Blush si estende all'intersuola leggera in Phylon, dotata di ammortizzazione Zoom Air nell'avampiede e nel tallone. Gli elementi del marchio includono il logo Jumpman ricamato sulla linguetta e un occhio olografico incastonato nel colletto laterale. Sotto il piede, la suola in gomma a zampa di pantera offre una trazione aderente.",
             ImgCover = "air_jordan_13.webp",
             OtherImg = new List<string> { "air_jordan_13_2.webp", "air_jordan_13_3.webp" }
         },

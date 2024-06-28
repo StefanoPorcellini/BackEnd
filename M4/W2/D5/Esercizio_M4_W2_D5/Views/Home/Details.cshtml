@@ -3,30 +3,31 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>@Model.Brand</h1>
-<h2>@Model.Name</h2>
-<div>
+<h1 class="text-center">@Model.Brand</h>
+<h2 class="text-center">@Model.Name</h2>
+<div class="my-5">
     <div id="carouselExampleFade" class="carousel slide carousel-fade">
         <div class="carousel-inner">
             <div class="carousel-item active">
-                <img src="~/images/@Model.ImgCover~/images/@Model.OtherImg[0]" class="d-block w-100" alt="Prima Immagine">
+                <img src="~/images/@Model.ImgCover" class="d-block w-50 mx-auto" alt="Prima Immagine">
             </div>
             <div class="carousel-item">
-                <img src="~/images/@Model.OtherImg[0]" class="d-block w-100" alt="Seconda Immagine">
+                <img src="~/images/@Model.OtherImg[0]" class="d-block w-50 mx-auto" alt="Seconda Immagine">
             </div>
             <div class="carousel-item">
-                <img src="~/images/@Model.OtherImg[0]" class="d-block w-100" alt="Terza Immagine">
+                <img src="~/images/@Model.OtherImg[1]" class="d-block w-50 mx-auto" alt="Terza Immagine">
             </div>
         </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleFade" data-bs-slide="prev">
+        <button class="carousel-control-prev control" type="button" data-bs-target="#carouselExampleFade" data-bs-slide="prev">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Previous</span>
         </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleFade" data-bs-slide="next">
+        <button class="carousel-control-next control" type="button" data-bs-target="#carouselExampleFade" data-bs-slide="next">
             <span class="carousel-control-next-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Next</span>
         </button>
     </div>
 </div>
-<p>@Model.Description</p>
-<a asp-action="Index" class="btn btn-outline-info">Torna alla vetrina</a>
+    <p class="description">@Model.Description</p>
+    <h3 class="text-center text-danger fw-bold fs-4 ">@Model.Price €</h3>
+<a asp-action="Index" class="btn title text-white">Torna alla vetrina</a>

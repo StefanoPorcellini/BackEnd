@@ -9,5 +9,17 @@
         public decimal Price { get; set; }
         public string ImgCover { get; set; }
 
+        public string ShortDescription
+        {
+            get
+            {
+                if (Description.Length > 75)
+                    return Description.Substring(0, 75) + "...";
+                else
+                    return Description;
+            }
+        }
+
+
     }
 }
