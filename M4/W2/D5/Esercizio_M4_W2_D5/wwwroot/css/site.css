@@ -29,8 +29,8 @@ body {
         border: 3px solid #7abcc1;
     }
 
-.navbar {
-    background-color: #e3f2fd;
+.navbar, footer {
+    background-color: #7abcc1;
 }
 
 .container-fluid{
