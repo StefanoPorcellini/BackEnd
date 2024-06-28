@@ -25,6 +25,8 @@ namespace Esercizio_M4_W2_D5.Controllers
             {
                 Id = p.Id,
                 Brand = p.Brand,
+                Name = p.Name,
+                Description = p.Description,
                 Price = p.Price,
                 ImgCover = p.ImgCover,
             }).ToList();
