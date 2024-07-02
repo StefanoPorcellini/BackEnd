@@ -5,7 +5,7 @@ VisualStudioVersion = 17.10.35013.160
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Esercizio_M4_W2_D3", "M4\W2\D3\Esercizio_M4_W2_D3\Esercizio_M4_W2_D3.csproj", "{BF29C0A4-F7D3-4267-B988-8F42A43EFA93}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Esercizio_M4_W2_D5", "M4\W2\D5\Esercizio_M4_W2_D5\Esercizio_M4_W2_D5.csproj", "{F591740C-1C41-4462-A582-255BEFEE3407}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Esercizio_M4_W2_D5", "M4\W2\D5\Esercizio_M4_W2_D5\Esercizio_M4_W2_D5.csproj", "{F591740C-1C41-4462-A582-255BEFEE3407}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
