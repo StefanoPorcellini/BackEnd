@@ -1,0 +1,35 @@
+﻿@model IEnumerable<Impiegato>
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Impiegati</h1>
+    <div class="container">
+        <div class="row">
+            <div class="col text-start">
+    <table class="table">
+                    <thead>
+                        <th scope="col">Cognome</th>
+                        <th scope="col">Nome</th>
+                        <th scope="col">Codice Fiscale</th>
+                        <th scope="col">Età</th>
+                        <th scope="col">Reddito</th>
+                        <th scope="col">Detrazione Fiscale</th>
+                    </thead>
+             @foreach (var i in Model) {
+            <tr>
+                <td>@i.Cognome</td>
+                <td>@i.Nome</td>
+                <td>@i.CodiceFiscale</td>
+                <td>@i.Eta</td>
+                <td>@i.RedditoMensile</td>
+                <td>@((i.DetrazioneFiscale)? "SI" : "NO")</td>
+            </tr>
+        }
+</table>
+
+            </div>
+        </div>
+    </div>
+</div>
