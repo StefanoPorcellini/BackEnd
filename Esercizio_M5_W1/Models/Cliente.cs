@@ -3,8 +3,8 @@
     public class Cliente
     {
         public int Id { get; set; }
-        public string Name { get; set; }
-        public TipoCliente tipoCliente { get; set; }
+        public string Nome { get; set; }
+        public string tipoCliente { get; set; }
         public string CF { get; set; }
         public string PIVA { get; set; }
     }
