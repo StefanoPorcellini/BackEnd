@@ -1,0 +1,10 @@
+﻿@using Esercizio_M5_W1.Services.Auth
+@model User
+
+<form asp-action="Login">
+    <label asp-for="Username" />
+    <input asp-for="Username" />
+    <label asp-for="Password" />
+    <input asp-for="Password" />
+    <button>Login</button>
+</form>

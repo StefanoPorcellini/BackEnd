@@ -71,7 +71,7 @@ namespace Esercizio_M5_W1.Services.V1
             var query = "SELECT Nome, Tipo, CodiceFiscale, PartitaIva FROM Clienti " +
                 "WHERE Id = @Id";
             var cmd = GetCommand(query);
-            cmd.Parameters(new SqlParameter("Id", Id));
+            cmd.Parameters.Add(new SqlParameter("Id", Id));
             using var conn = GetConnection();
             conn.Open();
             var reader = cmd.ExecuteReader();
@@ -86,11 +86,10 @@ namespace Esercizio_M5_W1.Services.V1
                 };
                 return cliente;
             } else
-            {
-                throw new Exception("Cliente non trovato")
-            }
+                {
+                throw new Exception("Cliente non trovato");
+                }
         }
-
         public void Update(Cliente cliente)
         {
             throw new NotImplementedException();

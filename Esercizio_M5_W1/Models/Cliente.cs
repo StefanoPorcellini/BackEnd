@@ -7,5 +7,6 @@
         public string tipoCliente { get; set; }
         public string CF { get; set; }
         public string PIVA { get; set; }
+        public int Id_User { get; set; }
     }
 }
