@@ -4,18 +4,18 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using System.Xml;
 
 namespace Esercizio_M5_W1.Controllers
 {
     public class AccountController : Controller
     {
-        public readonly IAuthService authenticationServices;
+        private readonly IAuthService _authenticationServices;
 
         public AccountController(IAuthService authenticationServices)
         {
-            this.authenticationServices = authenticationServices;
+            _authenticationServices = authenticationServices;
         }
+
         public IActionResult Login()
         {
             return View();
@@ -25,8 +25,13 @@ namespace Esercizio_M5_W1.Controllers
         public async Task<IActionResult> Login(User user)
         {
             try
-            {var u = authenticationServices.Login(user.Username, user.Password);
-                if (u == null) return RedirectToAction("Index", "Home");
+            {
+                var u = _authenticationServices.Login(user.Username, user.Password);
+                if (u == null)
+                {
+                    ModelState.AddModelError("", "Invalid login attempt.");
+                    return View();
+                }
 
                 var claims = new List<Claim>
                 {
@@ -37,14 +42,21 @@ namespace Esercizio_M5_W1.Controllers
 
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
                     new ClaimsPrincipal(identity));
+
+                return RedirectToAction("Index", "Home");
             }
-            catch (Exception ex) { }
-            return RedirectToAction("Index","Home");
+            catch (UnauthorizedAccessException)
+            {
+                ModelState.AddModelError("", "Invalid username or password.");
+                return View();
+            }
+           
         }
+
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync();
-            return RedirectToAction("Index","Home");
+            return RedirectToAction("Index", "Home");
         }
     }
 }

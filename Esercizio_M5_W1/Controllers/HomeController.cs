@@ -13,7 +13,7 @@ namespace Esercizio_M5_W1.Controllers
         {
             _logger = logger;
         }
-        [Authorize]
+        
         public IActionResult Index()
         {
             return View();

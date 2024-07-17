@@ -1,8 +1,14 @@
-﻿@{
+﻿@using System.Security.Claims
+@{
     ViewData["Title"] = "Home Page";
+
+    var currentUser = (User.Identity?.IsAuthenticated ?? false) ? User.Identity.Name : "Ospite";
+    var roleClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role);
+    var userRole = roleClaim != null ? roleClaim.Value : "Nessun Ruolo";
+
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Welcome @currentUser</h1>
+    <p>Ruolo: @userRole</p>
 </div>
