@@ -11,6 +11,7 @@
         public string CittaDestinaratia { get; set; }
         public string IndirizzoDestinazione { get; set; }
         public string NominativoDestinazione { get; set; }
+        public decimal Costo {  get; set; }
         public DateTime DataConsegnaPrevista { get; set; }
         public ICollection<AggiornamentoSpedizione> Aggiornamenti { get; set; }
     }

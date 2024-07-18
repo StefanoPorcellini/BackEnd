@@ -20,6 +20,7 @@ builder.Services
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IClienteService, ClienteService>();
+builder.Services.AddScoped<ISpedizioneService, SpedizioneService>();
 
 
 var app = builder.Build();

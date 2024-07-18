@@ -14,14 +14,21 @@ namespace Esercizio_M5_W1.Controllers
             _logger = logger;
         }
         
-        public IActionResult Index()
+        public IActionResult Privacy()
         {
             return View();
         }
 
-        public IActionResult Privacy()
+        public IActionResult Index()
         {
-            return View();
+            IEnumerable<Spedizione> spedizioni = null;
+
+            if (TempData["Spedizioni"] != null)
+            {
+                spedizioni = Newtonsoft.Json.JsonConvert.DeserializeObject<IEnumerable<Spedizione>>(TempData["Spedizioni"].ToString());
+            }
+
+            return View(spedizioni);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

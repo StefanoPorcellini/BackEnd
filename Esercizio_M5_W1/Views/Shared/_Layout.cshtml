@@ -31,14 +31,21 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
-                         <li class="nav-item">
-                            <a class="nav-link text-dark @((User.Identity?.IsAuthenticated ?? false) ? "d-none" : "")"
+                        @if(User.Identity?.IsAuthenticated ?? false)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark"
+                                   asp-area="" asp-controller="Account" asp-action="Logout">Logout</a>
+                            </li>
+                        }
+                        else
+                        {                            
+                        <li class="nav-item">
+                            <a class="nav-link text-dark"
                             asp-area="" asp-controller="Account" asp-action="Login">Login</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark @((User.Identity?.IsAuthenticated ?? false) ? "" : "d-none")"
-                            asp-area="" asp-controller="Account" asp-action="Logout">Logout</a>
-                        </li>
+                        }
+                        
                         </li>
                         @if (isAdmin)
                         {

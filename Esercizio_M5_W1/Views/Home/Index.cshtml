@@ -1,14 +1,58 @@
-﻿@using System.Security.Claims
+﻿@model IEnumerable<Esercizio_M5_W1.Models.Spedizione>
+@using System.Security.Claims
 @{
     ViewData["Title"] = "Home Page";
 
     var currentUser = (User.Identity?.IsAuthenticated ?? false) ? User.Identity.Name : "Ospite";
     var roleClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role);
     var userRole = roleClaim != null ? roleClaim.Value : "Nessun Ruolo";
-
 }
 
 <div class="text-center">
     <h1 class="display-4">Welcome @currentUser</h1>
     <p>Ruolo: @userRole</p>
 </div>
+
+@if (userRole=="User")
+{
+    <div>
+        <h2>Le tue Spedizioni</h2>
+
+        @if (Model != null && Model.Any())
+        {
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Numero Identificativo</th>
+                        <th>Data Spedizione</th>
+                        <th>Peso</th>
+                        <th>Città Destinataria</th>
+                        <th>Indirizzo Destinatario</th>
+                        <th>Nominativo Destinatario</th>
+                        <th>Costo</th>
+                        <th>Data Consegna Prevista</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var spedizione in Model)
+                    {
+                        <tr>
+                            <td>@spedizione.N_Identificativo</td>
+                            <td>@spedizione.DataSpedizione.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td>@spedizione.Peso</td>
+                            <td>@spedizione.CittaDestinaratia</td>
+                            <td>@spedizione.IndirizzoDestinazione</td>
+                            <td>@spedizione.NominativoDestinazione</td>
+                            <td>@spedizione.Costo.ToString("C")</td>
+                            <td>@spedizione.DataConsegnaPrevista.ToString("dd/MM/yyyy HH:mm")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p>Non ci sono spedizioni associate al tuo account.</p>
+        }
+    </div>
+}

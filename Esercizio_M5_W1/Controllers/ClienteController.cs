@@ -97,8 +97,7 @@ namespace Esercizio_M5_W1.Controllers
             return View(cliente);
         }
 
-        ///Delete
-        public IActionResult Delete(int? id)
+        public IActionResult GetById(int? id)
         {
             if (id == null)
             {
@@ -121,9 +120,6 @@ namespace Esercizio_M5_W1.Controllers
             }
         }
 
-        // Delete http post
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
         public IActionResult Delete(int id)
         {
             try
