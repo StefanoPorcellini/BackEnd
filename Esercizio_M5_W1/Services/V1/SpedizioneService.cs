@@ -40,6 +40,26 @@ namespace Esercizio_M5_W1.Services.V1
 
             return spedizioni;
         }
+                public void CreaSpedizione(Spedizione spedizione)
+                {
+                    var query = "INSERT INTO Spedizioni (Id_Cliente, NumeroIdentificativo, DataSpedizione, Peso, CittaDestinataria, IndirizzoDestinatario, " +
+                                "NominativoDestinazione, Costo, DataConsegnaPrevista) VALUES (@Id_Cliente, @N_Identificativo, @DataSpedizione, @Peso, " +
+                                "@CittaDestinataria, @IndirizzoDestinazione, @NominativoDestinazione, @Costo, @DataConsegnaPrevista)";
+                    using var conn = GetConnection();
+                    conn.Open();
 
+                    using var cmd = GetCommand(query, conn);
+                    cmd.Parameters.Add(new SqlParameter("@Id_Cliente", spedizione.Id_Cliente));
+                    cmd.Parameters.Add(new SqlParameter("@NumeroIdentificativo", spedizione.N_Identificativo));
+                    cmd.Parameters.Add(new SqlParameter("@DataSpedizione", spedizione.DataSpedizione));
+                    cmd.Parameters.Add(new SqlParameter("@Peso", spedizione.Peso));
+                    cmd.Parameters.Add(new SqlParameter("@CittaDestinataria", spedizione.CittaDestinaratia));
+                    cmd.Parameters.Add(new SqlParameter("@IndirizzoDestinatario", spedizione.IndirizzoDestinazione));
+                    cmd.Parameters.Add(new SqlParameter("@NominativoDestinazione", spedizione.NominativoDestinazione));
+                    cmd.Parameters.Add(new SqlParameter("@Costo", spedizione.Costo));
+                    cmd.Parameters.Add(new SqlParameter("@DataConsegnaPrevista", spedizione.DataConsegnaPrevista));
+
+                    cmd.ExecuteNonQuery();
+                }
     }
 }

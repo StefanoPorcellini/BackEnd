@@ -1,0 +1,42 @@
+﻿@model IEnumerable<Esercizio_M5_W1_D5.Models.Violazione>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Lista delle Violazioni</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-success">Nuova Violazione</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Descrizione
+            </th>
+            <th>
+                Importo
+            </th>
+            <th>
+                Decurtamento Punti
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Descrizione)
+                </td>
+                <td>
+                    @item.Importo.ToString("C")
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DecurtamentoPunti)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
