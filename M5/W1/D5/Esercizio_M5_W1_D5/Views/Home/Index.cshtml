@@ -3,6 +3,16 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Gestione Verbali Polizia</h1>
+    <div class="btn-group mt-4" role="group">
+        <a class="btn btn-outline-warning" asp-controller="Anagrafe" asp-action="Index">
+            Gestione Trasgressori
+        </a>
+        <a class="btn btn-outline-info" asp-controller="Violazioni" asp-action="Index">
+            Gestione Violazioni
+        </a>
+        <a class="btn btn-outline-danger" asp-controller="Verbali" asp-action="Index">
+            Gestione Verbali
+        </a>
+    </div>
 </div>
