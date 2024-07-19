@@ -9,6 +9,8 @@
         public DateTime DataTrascrizioneVerbale { get; set; }
         public int Anagrafica_FK { get; set; }
         public int Violazione_FK { get; set; }
+        public Anagrafica Trasgressore { get; set; }
+        public Violazione Violazione {get; set; }
 
     }
 }

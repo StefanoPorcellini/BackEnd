@@ -1,0 +1,54 @@
+﻿@model IEnumerable<Esercizio_M5_W1_D5.Models.Verbale>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Verbali Trascritti</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-success">Aggiungi un nuovo verbale</a>
+    <a asp-action="DieciPunti" class="btn btn-warning" >Violazioni con detrazioni superiori a 10 punti</a>
+    <a asp-action="MultaSalata" class="btn btn-danger" >Violazioni con importi superiori a 400€</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>           
+            <th>
+                @Html.DisplayNameFor(model => model.DataViolazione)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IndirizzoViolazione)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NominativoAgente)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DataTrascrizioneVerbale)
+            </th>
+           
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.DataViolazione)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IndirizzoViolazione)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NominativoAgente)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DataTrascrizioneVerbale)
+            </td>
+            <td>
+                    <a asp-action="Details" asp-route-id="@item.IDVerbale" class="btn btn-info">Dettagli</a>
+                </td>
+        </tr>
+}
+    </tbody>
+</table>

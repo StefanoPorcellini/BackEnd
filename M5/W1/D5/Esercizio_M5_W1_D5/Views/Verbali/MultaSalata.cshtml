@@ -1,0 +1,53 @@
+﻿@model IEnumerable<Esercizio_M5_W1_D5.Models.ViolazioneDettaglio>
+
+@{
+    ViewData["Title"] = "Violazioni con Importo > 400 Euro";
+}
+
+<h1>Violazioni con Importo > 400 Euro</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Importo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Cognome)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Nome)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DataViolazione)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DecurtamentoPunti)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @item.Importo.ToString("C")
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Cognome)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nome)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DataViolazione)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DecurtamentoPunti)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<a class="btn btn-outline-info" asp-action="Index">Indietro</a>
+

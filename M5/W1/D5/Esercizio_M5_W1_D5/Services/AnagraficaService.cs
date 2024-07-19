@@ -37,7 +37,7 @@ namespace Esercizio_M5_W1_D5.Services
                 }
             }
         }
-
+        // metodo per recuperare tutti i trasgressori e calcolarne sia il totale dei verbali che il totale dei punti decurtati
         public IEnumerable<Anagrafica> GetAllTrasgressore()
         {
             var query = @"
@@ -85,40 +85,6 @@ namespace Esercizio_M5_W1_D5.Services
 
             };
         }
-        public IEnumerable<Anagrafica> GetTotalePuntiDecurtatiPerTrasgressore()
-        {
-            var query = @"
-                SELECT a.IDAnagrafica, a.Cognome, a.Nome, SUM(vi.DecurtamentoPunti) AS TotalePuntiDecurtati
-                FROM Anagrafiche a
-                LEFT JOIN Verbali v ON a.IDAnagrafica = v.Anagrafica_FK
-                LEFT JOIN Violazioni vi ON v.Violazione_FK = vi.IDViolazione
-                GROUP BY a.IDAnagrafica, a.Cognome, a.Nome";
-
-            var listaTrasgressori = new List<Anagrafica>();
-
-            using (var conn = GetConnection())
-            {
-                conn.Open();
-                using (var cmd = GetCommand(query, conn))
-                {
-                    using (var reader = cmd.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            var trasgressore = new Anagrafica
-                            {
-                                IDAnagrafica = reader.GetInt32(reader.GetOrdinal("IDAnagrafica")),
-                                Cognome = reader.GetString(reader.GetOrdinal("Cognome")),
-                                Nome = reader.GetString(reader.GetOrdinal("Nome")),
-                                TotalePuntiDecurtati = reader.IsDBNull(reader.GetOrdinal("TotalePuntiDecurtati")) ? 0 : reader.GetInt32(reader.GetOrdinal("TotalePuntiDecurtati"))
-                            };
-                            listaTrasgressori.Add(trasgressore);
-                        }
-                    }
-                }
-            }
-            return listaTrasgressori;
-        }
-        
+         
     }
 }

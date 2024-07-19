@@ -1,0 +1,95 @@
+﻿@model Esercizio_M5_W1_D5.Models.Verbale
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Dettaglio Verbale</h1>
+
+<div>
+    <hr />
+    <dl class="row">
+       
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.DataViolazione)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.DataViolazione)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.IndirizzoViolazione)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.IndirizzoViolazione)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.NominativoAgente)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.NominativoAgente)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.DataTrascrizioneVerbale)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.DataTrascrizioneVerbale)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Trasgressore.Cognome)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Trasgressore.Cognome)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Trasgressore.Nome)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Trasgressore.Nome)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Trasgressore.Indirizzo)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Trasgressore.Indirizzo)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Trasgressore.Città)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Trasgressore.Città)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Trasgressore.CAP)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Trasgressore.CAP)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Trasgressore.CF)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Trasgressore.CF)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Violazione.Descrizione)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Violazione.Descrizione)
+        </dd>
+        <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.Violazione.Importo)
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Violazione.Importo.ToString("C")
+        </dd>
+        <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.Violazione.DecurtamentoPunti)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Violazione.DecurtamentoPunti)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a class="btn btn-outline-info" asp-action="Index">Indietro</a>
+</div>
