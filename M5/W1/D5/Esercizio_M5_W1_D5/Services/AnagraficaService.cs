@@ -10,6 +10,7 @@ namespace Esercizio_M5_W1_D5.Services
     {
         public AnagraficaService(IConfiguration config) : base(config) { }
 
+        // metodo per aggiungere un nuovo trasgressore
         public void AddTrasgressore(Anagrafica trasgressore)
         {
             if (trasgressore == null)
@@ -70,6 +71,7 @@ namespace Esercizio_M5_W1_D5.Services
             return listaTrasgressori;
         }
 
+        //metodo per la creazione di una nuova Anagrafica presa dal DB
         private Anagrafica Create(DbDataReader reader)
         {
             return new Anagrafica
@@ -81,7 +83,8 @@ namespace Esercizio_M5_W1_D5.Services
                 CAP = reader.GetString(reader.GetOrdinal("CAP")),
                 CF = reader.GetString(reader.GetOrdinal("CF")),
                 TotaleVerbali = reader.GetInt32(reader.GetOrdinal("TotaleVerbali")),
-                TotalePuntiDecurtati = reader.GetInt32(reader.GetOrdinal("TotalePuntiDecurtati"))
+                TotalePuntiDecurtati = reader.GetInt32(reader.GetOrdinal("TotalePuntiDecurtati")),
+                IDAnagrafica = reader.GetInt32(reader.GetOrdinal("IDAnagrafica"))
 
             };
         }

@@ -1,0 +1,62 @@
+﻿@model Esercizio_M5_W1_D5.Models.Verbale
+
+@{
+    ViewData["Title"] = "Nuovo Verbale";
+}
+
+<h1>Nuovo Verbale</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create" method="post">
+            <div class="form-group">
+                <label asp-for="DataViolazione" class="control-label"></label>
+                <input asp-for="DataViolazione" class="form-control" />
+                <span asp-validation-for="DataViolazione" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IndirizzoViolazione" class="control-label"></label>
+                <input asp-for="IndirizzoViolazione" class="form-control" />
+                <span asp-validation-for="IndirizzoViolazione" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NominativoAgente" class="control-label"></label>
+                <input asp-for="NominativoAgente" class="form-control" />
+                <span asp-validation-for="NominativoAgente" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DataTrascrizioneVerbale" class="control-label"></label>
+                <input asp-for="DataTrascrizioneVerbale" class="form-control" />
+                <span asp-validation-for="DataTrascrizioneVerbale" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Anagrafica_FK" class="control-label">Trasgressore</label>
+                <select asp-for="Anagrafica_FK" class="form-control" asp-items="@(new SelectList(ViewBag.Trasgressori, "IDAnagrafica", "NomeCompleto"))">
+                    <option value="">Seleziona Trasgressore</option>
+                </select>
+                <span asp-validation-for="Anagrafica_FK" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Violazione_FK" class="control-label">Violazione</label>
+                <select asp-for="Violazione_FK" class="form-control" asp-items="@(new SelectList(ViewBag.Violazioni, "IDViolazione", "Descrizione"))">
+                    <option value="">Seleziona Violazione</option>
+                </select>
+                <span asp-validation-for="Violazione_FK" class="text-danger"></span>
+            </div>
+            <div class="form-group mt-2">
+                <input type="submit" value="Create" class="btn btn-outline-success" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="mt-2">
+    <a class="btn btn-outline-info" asp-action="Index">Indietro</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

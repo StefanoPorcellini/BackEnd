@@ -19,7 +19,7 @@ namespace Esercizio_M5_W1_D5.Controllers
             return View(violazioni);
         }
 
-        //Violacioni Cerate
+        //Violazioni Cerate
         public IActionResult Create()
         {
             return View();

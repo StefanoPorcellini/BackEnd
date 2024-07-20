@@ -2,6 +2,7 @@
 {
     public class ViolazioneDettaglio
     {
+        //Dettaglio per la visualizzazione dei dati collegati tra Anagrafica e Violazione
         public string Descrizione { get; set; }
         public decimal Importo { get; set; }
         public string Cognome { get; set; }

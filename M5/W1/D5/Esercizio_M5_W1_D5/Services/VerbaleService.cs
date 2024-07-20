@@ -8,8 +8,13 @@ namespace Esercizio_M5_W1_D5.Services
 {
     public class VerbaleService : SqlServerServiceBase, IVerbaleService
     {
-        public VerbaleService(IConfiguration config) : base(config) { }
+        private readonly ILogger<VerbaleService> _logger;
+        public VerbaleService(IConfiguration config, ILogger<VerbaleService> logger) : base(config)
+        {
+            _logger = logger;
+        }
 
+        //metodi per creare un nuovo verbale
         public void AddVerbale(Verbale verbale)
         {
             if (verbale == null)
@@ -18,26 +23,37 @@ namespace Esercizio_M5_W1_D5.Services
             }
 
             var query = @"
-                        INSERT INTO Verbali (DataViolazione, IndirizzoViolazione, NominativoAgente, DataTrascrizioneVerbale, Anagrafica_FK, Violazione_FK)
-                        VALUES (@DataViolazione, @IndirizzoViolazione, @NominativoAgente, @DataTrascrizioneVerbale, @Anagrafica_FK, @Violazione_FK)";
+            INSERT INTO Verbali (DataViolazione, IndirizzoViolazione, NominativoAgente, DataTrascrizioneVerbale, Anagrafica_FK, Violazione_FK)
+            VALUES (@DataViolazione, @IndirizzoViolazione, @NominativoAgente, @DataTrascrizioneVerbale, @Anagrafica_FK, @Violazione_FK)";
 
             using (var conn = GetConnection())
             {
                 using (var cmd = GetCommand(query, conn))
                 {
                     cmd.Parameters.Add(new SqlParameter("@DataViolazione", verbale.DataViolazione));
-                    cmd.Parameters.Add(new SqlParameter("@IndirizzoViolazione", verbale.IndirizzoViolazione));
-                    cmd.Parameters.Add(new SqlParameter("@NominativoAgente", verbale.NominativoAgente));
+                    cmd.Parameters.Add(new SqlParameter("@IndirizzoViolazione", verbale.IndirizzoViolazione ?? (object)DBNull.Value));
+                    cmd.Parameters.Add(new SqlParameter("@NominativoAgente", verbale.NominativoAgente ?? (object)DBNull.Value));
                     cmd.Parameters.Add(new SqlParameter("@DataTrascrizioneVerbale", verbale.DataTrascrizioneVerbale));
                     cmd.Parameters.Add(new SqlParameter("@Anagrafica_FK", verbale.Anagrafica_FK));
                     cmd.Parameters.Add(new SqlParameter("@Violazione_FK", verbale.Violazione_FK));
 
-                    conn.Open();
-                    cmd.ExecuteNonQuery();
+                    try
+                    {
+                        conn.Open();
+                        int rowsAffected = cmd.ExecuteNonQuery();
+                        _logger.LogInformation($"Rows affected: {rowsAffected}"); 
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError($"Error adding verbale: {ex.Message}");
+                        throw;
+                    }
                 }
             }
         }
 
+
+        //Metodo per recuperare tutti i verbali dal DB
         public IEnumerable<Verbale> GetAllVerbali()
         {
             var query = @"
@@ -68,9 +84,10 @@ namespace Esercizio_M5_W1_D5.Services
             return listaVerbali;
         }
 
-        private Verbale Create(DbDataReader reader)
+        //metodo per la creazione di un nuovo Verbale preso dal DB (Prendo anche i dati relativi alla chiave esterna usarli nei dettagli del verbale)
+        private VerbaleViewModel Create(DbDataReader reader)
         {
-            return new Verbale
+            return new VerbaleViewModel
             {   
                 IDVerbale = reader.GetInt32(reader.GetOrdinal("IDVerbale")),
                 DataViolazione = reader.GetDateTime(reader.GetOrdinal("DataViolazione")),
@@ -99,6 +116,7 @@ namespace Esercizio_M5_W1_D5.Services
             };
         }
 
+        //metodo che prende i dati del verbale in base al ID del Anagrafica
         public IEnumerable<Verbale> GetByAnagraficaId(int anagraficaId)
         {
             var query = @"
@@ -132,6 +150,7 @@ namespace Esercizio_M5_W1_D5.Services
             return listaVerbali;
         }
 
+        //metodo per prendere i dati di un verbale in base al suo ID
         public Verbale GetById(int id)
         {
             var query = @"
@@ -161,6 +180,8 @@ namespace Esercizio_M5_W1_D5.Services
             }
             return null;
         }
+
+        //Metodo per prelevare i dati delle violazioni il cui decurtamento punti supera i 10 punti
         public IEnumerable<ViolazioneDettaglio> GetViolazioniOltre10Punti()
         {
             var query = @"
@@ -202,6 +223,8 @@ namespace Esercizio_M5_W1_D5.Services
 
             return violazioniDetails;
         }
+
+        //Metodo per prelevare i dati delle violazioni che superano l'importo di 400€
         public IEnumerable<ViolazioneDettaglio> GetViolazioniOltre400Euro()
         {
             var query = @"
