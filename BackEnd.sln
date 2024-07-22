@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Esercizio_M3_W3_D4", "M4\W3
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Esercizio_M5_W1", "Esercizio_M5_W1\Esercizio_M5_W1.csproj", "{998819BD-75BF-4CF0-8F19-9830B23FA693}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Esercizio_M5_W1_D5", "M5\W1\D5\Esercizio_M5_W1_D5\Esercizio_M5_W1_D5.csproj", "{DABA6392-8CAB-4450-94D0-6EF415FE18D5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Esercizio_M5_W1_D5", "M5\W1\D5\Esercizio_M5_W1_D5\Esercizio_M5_W1_D5.csproj", "{DABA6392-8CAB-4450-94D0-6EF415FE18D5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Esercizio_Gestione_Albergo", "M5\W2\Esercizio_Gestione_Albergo\Esercizio_Gestione_Albergo.csproj", "{3EC26EEB-1AA1-489F-9387-491E03298582}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{DABA6392-8CAB-4450-94D0-6EF415FE18D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DABA6392-8CAB-4450-94D0-6EF415FE18D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DABA6392-8CAB-4450-94D0-6EF415FE18D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3EC26EEB-1AA1-489F-9387-491E03298582}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3EC26EEB-1AA1-489F-9387-491E03298582}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3EC26EEB-1AA1-489F-9387-491E03298582}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3EC26EEB-1AA1-489F-9387-491E03298582}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
