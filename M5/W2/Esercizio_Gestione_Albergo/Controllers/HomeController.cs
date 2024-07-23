@@ -1,4 +1,6 @@
 using Esercizio_Gestione_Albergo.Models;
+using Esercizio_Gestione_Albergo.Services.DAO;
+using Esercizio_Gestione_Albergo.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -8,12 +10,13 @@ namespace Esercizio_Gestione_Albergo.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+
+        public HomeController(ILogger<HomeController> logger, IClienteDAO clienteDao)
         {
             _logger = logger;
-        }
 
-        public IActionResult Index()
+        }
+        public IActionResult Index() 
         {
             return View();
         }
@@ -30,3 +33,4 @@ namespace Esercizio_Gestione_Albergo.Controllers
         }
     }
 }
+

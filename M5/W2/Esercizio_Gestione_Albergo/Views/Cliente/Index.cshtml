@@ -1,10 +1,15 @@
 ﻿@model IEnumerable<Esercizio_Gestione_Albergo.ViewModels.ClienteViewModel>
 
 @{
-    ViewData["Title"] = "Elenco Clienti";
+    ViewData["Title"] = "Clienti";
 }
 
 <h1>@ViewData["Title"]</h1>
+
+<div class="mb-3">
+    <a asp-action="Create" class="btn btn-success">Crea Nuovo Cliente</a>
+</div>
+
 
 <table class="table">
     <thead>
@@ -33,9 +38,9 @@
                 <td>@cliente.Telefono</td>
                 <td>@cliente.Cellulare</td>
                 <td>
-                    <a href="@Url.Action("Details", new { codiceFiscale = cliente.CodiceFiscale })" class="btn btn-info">Dettagli</a>
-                    <a href="@Url.Action("Edit", new { codiceFiscale = cliente.CodiceFiscale })" class="btn btn-warning">Modifica</a>
-                    <a href="@Url.Action("Delete", new { codiceFiscale = cliente.CodiceFiscale })" class="btn btn-danger">Elimina</a>
+                    <a asp-action="Details" asp-route-codiceFiscale="@cliente.CodiceFiscale" class="btn btn-info">Dettagli</a>
+                    <a asp-action="Edit" asp-route-codiceFiscale="@cliente.CodiceFiscale" class="btn btn-warning">Modifica</a>
+                    <a asp-action="Delete" asp-route-codiceFiscale="@cliente.CodiceFiscale" class="btn btn-danger">Elimina</a>
                 </td>
             </tr>
         }

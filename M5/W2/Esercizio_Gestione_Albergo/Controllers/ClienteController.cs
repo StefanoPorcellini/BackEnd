@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Esercizio_Gestione_Albergo.DataAccess;
 using Esercizio_Gestione_Albergo.Models;
 using Esercizio_Gestione_Albergo.ViewModels;
@@ -9,20 +8,23 @@ namespace Esercizio_Gestione_Albergo.Controllers
 {
     public class ClienteController : Controller
     {
-        private readonly IClienteDAO _clienteDao;
+        private readonly IClienteDAO _clienteDAO;
+        private readonly ILogger<ClienteController> _logger;
 
-        public ClienteController(IClienteDAO clienteDao)
+
+        public ClienteController(IClienteDAO clienteDAO, ILogger<ClienteController> logger)
         {
-            _clienteDao = clienteDao;
+            _clienteDAO = clienteDAO;
+            _logger = logger;
         }
 
         // GET: Cliente
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             try
             {
                 // Recupera tutti i clienti dal DAO
-                var clienti = await _clienteDao.GetAllAsync();
+                var clienti = _clienteDAO.GetAll();
 
                 // Converti i clienti in view model
                 var viewModels = clienti.Select(cliente => new ClienteViewModel
@@ -55,14 +57,14 @@ namespace Esercizio_Gestione_Albergo.Controllers
         }
 
         // GET: Cliente/Details/5
-        public async Task<IActionResult> Details(string codiceFiscale)
+        public IActionResult Details(string codiceFiscale)
         {
             if (string.IsNullOrEmpty(codiceFiscale))
             {
                 return NotFound();
             }
 
-            var cliente = await _clienteDao.GetByCodiceFiscaleAsync(codiceFiscale);
+            var cliente = _clienteDAO.GetByCodiceFiscale(codiceFiscale);
             if (cliente == null)
             {
                 return NotFound();
@@ -70,48 +72,16 @@ namespace Esercizio_Gestione_Albergo.Controllers
 
             return View(cliente);
         }
-
-        // GET: Cliente/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Cliente/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(ClienteViewModel viewModel)
-        {
-            if (ModelState.IsValid)
-            {
-                var cliente = new Cliente
-                {
-                    CodiceFiscale = viewModel.CodiceFiscale,
-                    Cognome = viewModel.Cognome,
-                    Nome = viewModel.Nome,
-                    Città = viewModel.Città,
-                    Provincia = viewModel.Provincia,
-                    Email = viewModel.Email,
-                    Telefono = viewModel.Telefono,
-                    Cellulare = viewModel.Cellulare
-                };
-
-                await _clienteDao.AddAsync(cliente);
-                return RedirectToAction(nameof(Index));
-            }
-
-            return View(viewModel);
-        }
-
+                
         // GET: Cliente/Edit/5
-        public async Task<IActionResult> Edit(string codiceFiscale)
+        public IActionResult Edit(string codiceFiscale)
         {
             if (string.IsNullOrEmpty(codiceFiscale))
             {
                 return NotFound();
             }
 
-            var cliente = await _clienteDao.GetByCodiceFiscaleAsync(codiceFiscale);
+            var cliente = _clienteDAO.GetByCodiceFiscale(codiceFiscale);
             if (cliente == null)
             {
                 return NotFound();
@@ -123,7 +93,7 @@ namespace Esercizio_Gestione_Albergo.Controllers
         // POST: Cliente/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string codiceFiscale, ClienteViewModel viewModel)
+        public IActionResult Edit(string codiceFiscale, ClienteViewModel viewModel)
         {
             if (codiceFiscale != viewModel.CodiceFiscale)
             {
@@ -144,7 +114,7 @@ namespace Esercizio_Gestione_Albergo.Controllers
                     Cellulare = viewModel.Cellulare
                 };
 
-                await _clienteDao.UpdateAsync(cliente);
+                _clienteDAO.Update(cliente);
                 return RedirectToAction(nameof(Index));
             }
 
@@ -152,14 +122,14 @@ namespace Esercizio_Gestione_Albergo.Controllers
         }
 
         // GET: Cliente/Delete/5
-        public async Task<IActionResult> Delete(string codiceFiscale)
+        public IActionResult Delete(string codiceFiscale)
         {
             if (string.IsNullOrEmpty(codiceFiscale))
             {
                 return NotFound();
             }
 
-            var cliente = await _clienteDao.GetByCodiceFiscaleAsync(codiceFiscale);
+            var cliente = _clienteDAO.GetByCodiceFiscale(codiceFiscale);
             if (cliente == null)
             {
                 return NotFound();
@@ -171,11 +141,64 @@ namespace Esercizio_Gestione_Albergo.Controllers
         // POST: Cliente/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string codiceFiscale)
+        public IActionResult DeleteConfirmed(string codiceFiscale)
         {
-            await _clienteDao.DeleteAsync(codiceFiscale);
+            _clienteDAO.Delete(codiceFiscale);
             return RedirectToAction(nameof(Index));
         }
+
+        // GET: Cliente/Create
+        public IActionResult Create()
+        {
+            _logger.LogInformation("GET Create method called.");
+
+            return View();
+        }
+
+        // POST: Cliente/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(Cliente viewModel)
+        {
+            _logger.LogInformation("POST Create method called.");
+            
+                    if (ModelState.IsValid)
+                        {
+                        _logger.LogInformation("ModelState is valid.");
+
+                        try
+                        {
+                            var cliente = new Cliente
+                            {
+                                CodiceFiscale = viewModel.CodiceFiscale,
+                                Cognome = viewModel.Cognome,
+                                Nome = viewModel.Nome,
+                                Città = viewModel.Città,
+                                Provincia = viewModel.Provincia,
+                                Email = viewModel.Email,
+                                Telefono = viewModel.Telefono,
+                                Cellulare = viewModel.Cellulare
+                            };
+
+                            _clienteDAO.Add(cliente);
+                            _logger.LogInformation("Cliente aggiunto con successo.");
+
+                            return RedirectToAction(nameof(Index));
+                        }
+               
+                        catch (Exception ex)
+                        {
+                            _logger.LogError(ex, "Errore durante l'aggiunta del cliente.");
+                            ModelState.AddModelError(string.Empty, "Errore durante l'aggiunta del cliente.");
+                        }
+                    }
+                    else
+                    {
+                        _logger.LogWarning("ModelState is not valid.");
+                    }
+
+                    return View(viewModel);
     }
 
+    }
 }
