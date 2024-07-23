@@ -1,0 +1,43 @@
+﻿@model IEnumerable<Esercizio_Gestione_Albergo.ViewModels.ClienteViewModel>
+
+@{
+    ViewData["Title"] = "Elenco Clienti";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Codice Fiscale</th>
+            <th>Cognome</th>
+            <th>Nome</th>
+            <th>Città</th>
+            <th>Provincia</th>
+            <th>Email</th>
+            <th>Telefono</th>
+            <th>Cellulare</th>
+            <th>Azioni</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var cliente in Model)
+        {
+            <tr>
+                <td>@cliente.CodiceFiscale</td>
+                <td>@cliente.Cognome</td>
+                <td>@cliente.Nome</td>
+                <td>@cliente.Città</td>
+                <td>@cliente.Provincia</td>
+                <td>@cliente.Email</td>
+                <td>@cliente.Telefono</td>
+                <td>@cliente.Cellulare</td>
+                <td>
+                    <a href="@Url.Action("Details", new { codiceFiscale = cliente.CodiceFiscale })" class="btn btn-info">Dettagli</a>
+                    <a href="@Url.Action("Edit", new { codiceFiscale = cliente.CodiceFiscale })" class="btn btn-warning">Modifica</a>
+                    <a href="@Url.Action("Delete", new { codiceFiscale = cliente.CodiceFiscale })" class="btn btn-danger">Elimina</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -2,7 +2,7 @@
 using System.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 
-namespace Esercizio_M5_W1_D5.Services
+namespace Esercizio_Gestione_Albergo.Services.Sql
 {
     //Servizio SqlService per la gestione della connectionString, comandi e connessione al DB
     public class SqlServerServiceBase : ServiceBase

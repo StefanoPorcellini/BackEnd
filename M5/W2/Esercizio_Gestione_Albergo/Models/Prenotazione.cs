@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace Esercizio_Gestione_Albergo.Models
@@ -31,22 +31,12 @@ namespace Esercizio_Gestione_Albergo.Models
         public DateTime Al { get; set; }
 
         [Required]
-        [Column(TypeName = "decimal(18,2)")]
         public decimal CaparraConfirmatoria { get; set; }
 
         [Required]
-        [Column(TypeName = "decimal(18,2)")]
         public decimal Tariffa { get; set; }
 
         [Required]
-        [StringLength(100)]
-        public string DettagliSoggiorno { get; set; }
-
-        [ForeignKey("ClienteCodiceFiscale")]
-        public Cliente Cliente { get; set; }
-
-        [ForeignKey("CameraNumero")]
-        public Camera Camera { get; set; }
-
+        public int DettagliSoggiornoId { get; set; }
     }
 }

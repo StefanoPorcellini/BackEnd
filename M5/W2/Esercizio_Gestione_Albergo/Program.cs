@@ -1,7 +1,13 @@
+using Esercizio_Gestione_Albergo.DataAccess;
+using Esercizio_Gestione_Albergo.Services.DAO;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<IPrenotazioneDAO, PrenotazioneDAO>();
+builder.Services.AddScoped<IClienteDAO, ClienteDAO>();
+
 
 var app = builder.Build();
 

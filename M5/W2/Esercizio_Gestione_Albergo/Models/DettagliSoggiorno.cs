@@ -2,13 +2,12 @@
 
 namespace Esercizio_Gestione_Albergo.Models
 {
-    public class ServizioAggiuntivo
+    public class DettagliSoggiorno
     {
         [Key]
-        public int ID { get; set; }
-
+        public int Id { get; set; }
         [Required]
-        [StringLength(255)]
+        [StringLength(100)]
         public string Descrizione { get; set; }
     }
 }
