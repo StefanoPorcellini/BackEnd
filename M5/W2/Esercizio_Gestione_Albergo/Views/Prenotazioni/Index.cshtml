@@ -1,0 +1,51 @@
+﻿@model IEnumerable<Esercizio_Gestione_Albergo.Models.Prenotazione>
+
+@{
+    ViewData["Title"] = "Prenotazioni";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Nuova Prenotazione</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Cliente Codice Fiscale</th>
+            <th>Camera Numero</th>
+            <th>Data Prenotazione</th>
+            <th>Numero Progressivo</th>
+            <th>Anno</th>
+            <th>Dal</th>
+            <th>Al</th>
+            <th>Caparra Confirmatoria</th>
+            <th>Tariffa</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.ID</td>
+                <td>@item.ClienteCodiceFiscale</td>
+                <td>@item.CameraNumero</td>
+                <td>@item.DataPrenotazione</td>
+                <td>@item.NumeroProgressivo</td>
+                <td>@item.Anno</td>
+                <td>@item.Dal</td>
+                <td>@item.Al</td>
+                <td>@item.CaparraConfirmatoria</td>
+                <td>@item.Tariffa</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-warning">Edit</a>
+                    <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-info">Details</a>
+                    <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

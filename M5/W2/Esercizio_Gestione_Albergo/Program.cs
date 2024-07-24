@@ -1,4 +1,5 @@
 using Esercizio_Gestione_Albergo.DataAccess;
+using Esercizio_Gestione_Albergo.Models;
 using Esercizio_Gestione_Albergo.Services.DAO;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,6 +9,9 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddLogging();
 builder.Services.AddScoped<IPrenotazioneDAO, PrenotazioneDAO>();
 builder.Services.AddScoped<IClienteDAO, ClienteDAO>();
+builder.Services.AddScoped<IDettaglioSoggiornoDAO, DettagliSoggiornoDAO>();
+builder.Services.AddScoped<IServizioAggiuntivoDAO, ServizioAggiuntivoDAO>();
+builder.Services.AddScoped<ITipologiaCameraDAO, TipologiaCameraDAO>();
 
 
 var app = builder.Build();

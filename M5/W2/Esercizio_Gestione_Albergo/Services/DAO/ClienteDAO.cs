@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Threading.Tasks;
 using Esercizio_Gestione_Albergo.Services.DAO;
 using Esercizio_Gestione_Albergo.Services.Sql;
 using Esercizio_Gestione_Albergo.ViewModels;
@@ -11,39 +12,39 @@ namespace Esercizio_Gestione_Albergo.DataAccess
 {
     public class ClienteDAO : SqlServerServiceBase, IClienteDAO
     {
-        private const string GetAllQuery =              "SELECT * FROM Clienti";
-        private const string GetByCodiceFiscaleQuery =  "SELECT * FROM Clienti WHERE CodiceFiscale = @CodiceFiscale";
-        private const string InsertQuery =              "INSERT INTO Clienti (CodiceFiscale, Cognome, Nome, Città, Provincia, Email, " +
-                                                        "Telefono, Cellulare) VALUES (@CodiceFiscale, @Cognome, @Nome, @Città, @Provincia, " +
-                                                        "@Email, @Telefono, @Cellulare)";
-        private const string UpdateQuery =              "UPDATE Clienti SET Cognome = @Cognome, Nome = @Nome, Città = @Città, " +
-                                                        "Provincia = @Provincia, Email = @Email, Telefono = @Telefono, " +
-                                                        "Cellulare = @Cellulare WHERE CodiceFiscale = @CodiceFiscale";
-        private const string DeleteQuery =              "DELETE FROM Clienti WHERE CodiceFiscale = @CodiceFiscale";
+        private const string GetAllQuery = "SELECT * FROM Clienti";
+        private const string GetByCodiceFiscaleQuery = "SELECT * FROM Clienti WHERE CodiceFiscale = @CodiceFiscale";
+        private const string InsertQuery = "INSERT INTO Clienti (CodiceFiscale, Cognome, Nome, Città, Provincia, Email, " +
+                                           "Telefono, Cellulare) VALUES (@CodiceFiscale, @Cognome, @Nome, @Città, @Provincia, " +
+                                           "@Email, @Telefono, @Cellulare)";
+        private const string UpdateQuery = "UPDATE Clienti SET Cognome = @Cognome, Nome = @Nome, Città = @Città, " +
+                                           "Provincia = @Provincia, Email = @Email, Telefono = @Telefono, " +
+                                           "Cellulare = @Cellulare WHERE CodiceFiscale = @CodiceFiscale";
+        private const string DeleteQuery = "DELETE FROM Clienti WHERE CodiceFiscale = @CodiceFiscale";
 
         public ClienteDAO(IConfiguration config) : base(config) { }
 
-        public IEnumerable<ClienteViewModel> GetAll()
+        public async Task<IEnumerable<ClienteViewModel>> GetAll()
         {
             var clienti = new List<ClienteViewModel>();
             using (var connection = GetConnection())
             {
-                connection.Open();
+                await connection.OpenAsync();
                 var command = GetCommand(GetAllQuery, connection);
-                using (var reader = command.ExecuteReader())
+                using (var reader = await command.ExecuteReaderAsync())
                 {
-                    while (reader.Read())
+                    while (await reader.ReadAsync())
                     {
                         var cliente = new ClienteViewModel
                         {
-                            CodiceFiscale =     reader["CodiceFiscale"]?.ToString(),
-                            Cognome =           reader["Cognome"]?.ToString(),
-                            Nome =              reader["Nome"]?.ToString(),
-                            Città =             reader["Città"]?.ToString(),
-                            Provincia =         reader["Provincia"]?.ToString(),
-                            Email =             reader["Email"]?.ToString(),
-                            Telefono =          reader["Telefono"]?.ToString(),
-                            Cellulare =         reader["Cellulare"]?.ToString()
+                            CodiceFiscale = reader["CodiceFiscale"]?.ToString(),
+                            Cognome = reader["Cognome"]?.ToString(),
+                            Nome = reader["Nome"]?.ToString(),
+                            Città = reader["Città"]?.ToString(),
+                            Provincia = reader["Provincia"]?.ToString(),
+                            Email = reader["Email"]?.ToString(),
+                            Telefono = reader["Telefono"]?.ToString(),
+                            Cellulare = reader["Cellulare"]?.ToString()
                         };
                         clienti.Add(cliente);
                     }
@@ -52,29 +53,29 @@ namespace Esercizio_Gestione_Albergo.DataAccess
             return clienti;
         }
 
-        public ClienteViewModel GetByCodiceFiscale(string codiceFiscale)
+        public async Task<ClienteViewModel> GetByCodiceFiscale(string codiceFiscale)
         {
             ClienteViewModel cliente = null;
             using (var connection = GetConnection())
             {
-                connection.Open();
+                await connection.OpenAsync();
                 var command = GetCommand(GetByCodiceFiscaleQuery, connection);
                 command.Parameters.Add(new SqlParameter("@CodiceFiscale", SqlDbType.VarChar, 16) { Value = codiceFiscale });
 
-                using (var reader = command.ExecuteReader())
+                using (var reader = await command.ExecuteReaderAsync())
                 {
-                    if (reader.Read())
+                    if (await reader.ReadAsync())
                     {
                         cliente = new ClienteViewModel
                         {
-                            CodiceFiscale =     reader["CodiceFiscale"].ToString(),
-                            Cognome =           reader["Cognome"].ToString(),
-                            Nome =              reader["Nome"].ToString(),
-                            Città =             reader["Città"].ToString(),
-                            Provincia =         reader["Provincia"].ToString(),
-                            Email =             reader["Email"].ToString(),
-                            Telefono =          reader["Telefono"].ToString(),
-                            Cellulare =         reader["Cellulare"].ToString()
+                            CodiceFiscale = reader["CodiceFiscale"].ToString(),
+                            Cognome = reader["Cognome"].ToString(),
+                            Nome = reader["Nome"].ToString(),
+                            Città = reader["Città"].ToString(),
+                            Provincia = reader["Provincia"].ToString(),
+                            Email = reader["Email"].ToString(),
+                            Telefono = reader["Telefono"].ToString(),
+                            Cellulare = reader["Cellulare"].ToString()
                         };
                     }
                 }
@@ -82,11 +83,11 @@ namespace Esercizio_Gestione_Albergo.DataAccess
             return cliente;
         }
 
-        public void Add(Cliente cliente)
+        public async Task Add(Cliente cliente)
         {
             using (var connection = GetConnection())
             {
-                connection.Open();
+                await connection.OpenAsync();
                 var command = GetCommand(InsertQuery, connection);
                 command.Parameters.Add(new SqlParameter("@CodiceFiscale", SqlDbType.VarChar, 16) { Value = cliente.CodiceFiscale });
                 command.Parameters.Add(new SqlParameter("@Cognome", SqlDbType.NVarChar, 50) { Value = cliente.Cognome });
@@ -97,15 +98,15 @@ namespace Esercizio_Gestione_Albergo.DataAccess
                 command.Parameters.Add(new SqlParameter("@Telefono", SqlDbType.NVarChar, 20) { Value = (object)cliente.Telefono ?? DBNull.Value });
                 command.Parameters.Add(new SqlParameter("@Cellulare", SqlDbType.NVarChar, 20) { Value = (object)cliente.Cellulare ?? DBNull.Value });
 
-                command.ExecuteNonQuery();
+                await command.ExecuteNonQueryAsync();
             }
         }
 
-        public void Update(Cliente cliente)
+        public async Task Update(Cliente cliente)
         {
             using (var connection = GetConnection())
             {
-                connection.Open();
+                await connection.OpenAsync();
                 var command = GetCommand(UpdateQuery, connection);
                 command.Parameters.Add(new SqlParameter("@CodiceFiscale", SqlDbType.VarChar, 16) { Value = cliente.CodiceFiscale });
                 command.Parameters.Add(new SqlParameter("@Cognome", SqlDbType.NVarChar, 50) { Value = cliente.Cognome });
@@ -116,19 +117,19 @@ namespace Esercizio_Gestione_Albergo.DataAccess
                 command.Parameters.Add(new SqlParameter("@Telefono", SqlDbType.NVarChar, 20) { Value = (object)cliente.Telefono ?? DBNull.Value });
                 command.Parameters.Add(new SqlParameter("@Cellulare", SqlDbType.NVarChar, 20) { Value = (object)cliente.Cellulare ?? DBNull.Value });
 
-                command.ExecuteNonQuery();
+                await command.ExecuteNonQueryAsync();
             }
         }
 
-        public void Delete(string codiceFiscale)
+        public async Task Delete(string codiceFiscale)
         {
             using (var connection = GetConnection())
             {
-                connection.Open();
+                await connection.OpenAsync();
                 var command = GetCommand(DeleteQuery, connection);
                 command.Parameters.Add(new SqlParameter("@CodiceFiscale", SqlDbType.VarChar, 16) { Value = codiceFiscale });
 
-                command.ExecuteNonQuery();
+                await command.ExecuteNonQueryAsync();
             }
         }
     }

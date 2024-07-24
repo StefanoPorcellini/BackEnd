@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Esercizio_Gestione_Albergo.Models;
 using Esercizio_Gestione_Albergo.Services.DAO;
 using Esercizio_Gestione_Albergo.Services.Sql;
+using Esercizio_Gestione_Albergo.ViewModels;
 using Microsoft.Extensions.Configuration;
 
 namespace Esercizio_Gestione_Albergo.DataAccess
@@ -30,9 +31,9 @@ namespace Esercizio_Gestione_Albergo.DataAccess
 
         public PrenotazioneDAO(IConfiguration config) : base(config) { }
 
-        public async Task<IEnumerable<Prenotazione>> GetAllAsync()
+        public async Task<IEnumerable<PrenotazioneViewModel>> GetAllAsync()
         {
-            var prenotazioni = new List<Prenotazione>();
+            var prenotazioni = new List<PrenotazioneViewModel>();
             using (var connection = GetConnection())
             {
                 await connection.OpenAsync();
@@ -41,7 +42,7 @@ namespace Esercizio_Gestione_Albergo.DataAccess
                 {
                     while (await reader.ReadAsync())
                     {
-                        prenotazioni.Add(new Prenotazione
+                        prenotazioni.Add(new PrenotazioneViewModel
                         {
                             ID = (int)reader["ID"],
                             ClienteCodiceFiscale = reader["ClienteCodiceFiscale"].ToString(),
@@ -61,9 +62,9 @@ namespace Esercizio_Gestione_Albergo.DataAccess
             return prenotazioni;
         }
 
-        public async Task<Prenotazione> GetByIdAsync(int id)
+        public async Task<PrenotazioneViewModel> GetByIdAsync(int id)
         {
-            Prenotazione prenotazione = null;
+            PrenotazioneViewModel prenotazione = null;
             using (var connection = GetConnection())
             {
                 await connection.OpenAsync();
@@ -74,7 +75,7 @@ namespace Esercizio_Gestione_Albergo.DataAccess
                 {
                     if (await reader.ReadAsync())
                     {
-                        prenotazione = new Prenotazione
+                        prenotazione = new PrenotazioneViewModel
                         {
                             ID = (int)reader["ID"],
                             ClienteCodiceFiscale = reader["ClienteCodiceFiscale"].ToString(),
@@ -94,7 +95,7 @@ namespace Esercizio_Gestione_Albergo.DataAccess
             return prenotazione;
         }
 
-        public async Task AddAsync(Prenotazione prenotazione)
+        public async Task AddAsync(PrenotazioneViewModel prenotazione)
         {
             using (var connection = GetConnection())
             {
@@ -115,7 +116,7 @@ namespace Esercizio_Gestione_Albergo.DataAccess
             }
         }
 
-        public async Task UpdateAsync(Prenotazione prenotazione)
+        public async Task UpdateAsync(PrenotazioneViewModel prenotazione)
         {
             using (var connection = GetConnection())
             {
