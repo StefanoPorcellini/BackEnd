@@ -1,0 +1,101 @@
+﻿@model Esercizio_Gestione_Albergo.ViewModels.ClienteViewModel
+
+@{
+    ViewData["Title"] = "Dettagli Cliente";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div>
+    <h4>@Model.Nome @Model.Cognome</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CodiceFiscale)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CodiceFiscale)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Cognome)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Cognome)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Nome)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Nome)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Città)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Città)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Provincia)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Provincia)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Telefono)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Telefono)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Cellulare)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Cellulare)
+        </dd>
+    </dl>
+</div>
+
+<div>
+    <h3>Prenotazioni</h3>
+    @if (Model.Prenotazioni != null && Model.Prenotazioni.Any())
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Data Prenotazione</th>
+                    <th>Numero Camera</th>
+                    <th>Tariffa</th>
+                    <th>Caparra Confirmatoria</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var prenotazione in Model.Prenotazioni)
+                {
+                    <tr>
+                        <td>@prenotazione.ID</td>
+                        <td>@prenotazione.DataPrenotazione.ToShortDateString()</td>
+                        <td>@prenotazione.CameraNumero</td>
+                        <td>@prenotazione.Tariffa.ToString("C")</td>
+                        <td>@prenotazione.CaparraConfirmatoria.ToString("C")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>Non ci sono prenotazioni per questo cliente.</p>
+    }
+</div>
+
+<div>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.CodiceFiscale }) |
+    <a asp-action="Index">Back to List</a>
+</div>

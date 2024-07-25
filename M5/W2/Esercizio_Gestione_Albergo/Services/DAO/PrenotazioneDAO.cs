@@ -16,8 +16,15 @@ namespace Esercizio_Gestione_Albergo.DataAccess
             _logger = logger;
         }
 
-        private const string GetAllQuery = "SELECT * FROM Prenotazioni";
+        private const string GetAllQuery =  "SELECT p.ID, p.ClienteCodiceFiscale, p.CameraNumero, p.DataPrenotazione, p.NumeroProgressivo, " +
+                                            "p.Anno, p.Dal, p.Al, p.CaparraConfirmatoria, p.Tariffa, p.DettagliSoggiornoId, p.SaldoFinale," +
+                                            "c.Numero AS CameraNumero, c.Descrizione AS CameraDescrizione," +
+                                            "ds.Descrizione AS DettaglioSoggiornoDescrizione " +
+                                            "FROM Prenotazioni p JOIN Camere c ON p.CameraNumero = c.Numero " +
+                                            "JOIN DettagliSoggiorno ds ON p.DettagliSoggiornoId = ds.Id";
+
         private const string GetByIdQuery = "SELECT * FROM Prenotazioni WHERE ID = @ID";
+
         private const string InsertQuery = "INSERT INTO Prenotazioni (ClienteCodiceFiscale, CameraNumero, DataPrenotazione, NumeroProgressivo, Anno, Dal, Al, CaparraConfirmatoria, Tariffa, DettagliSoggiornoId, SaldoFinale) " +
                                             "VALUES (@ClienteCodiceFiscale, @CameraNumero, GETDATE(), @NumeroProgressivo, @Anno, @Dal, @Al, @CaparraConfirmatoria, @Tariffa, @DettagliSoggiornoId, @SaldoFinale); SELECT SCOPE_IDENTITY();";
 
@@ -46,9 +53,9 @@ namespace Esercizio_Gestione_Albergo.DataAccess
                                                "JOIN DettagliSoggiorno ds ON ds.Id = @DettaglioSoggiornoId " +
                                                "WHERE c.Numero = @CameraNumero";
 
-        public async Task<IEnumerable<PrenotazioneViewModel>> GetAllAsync()
+        public async Task<IEnumerable<Prenotazione>> GetAllAsync()
         {
-            var prenotazioni = new List<PrenotazioneViewModel>();
+            var prenotazioni = new List<Prenotazione>();
             using (var connection = GetConnection())
             {
                 await connection.OpenAsync();
@@ -57,13 +64,13 @@ namespace Esercizio_Gestione_Albergo.DataAccess
                 {
                     while (await reader.ReadAsync())
                     {
-                        prenotazioni.Add(new PrenotazioneViewModel
+                        prenotazioni.Add(new Prenotazione
                         {
                             ID = (int)reader["ID"],
                             ClienteCodiceFiscale = reader["ClienteCodiceFiscale"].ToString(),
                             CameraNumero = (int)reader["CameraNumero"],
                             DataPrenotazione = (DateTime)reader["DataPrenotazione"],
-                            NumeroProgressivo = (string)reader["NumeroProgressivo"],
+                            NumeroProgressivo = reader["NumeroProgressivo"].ToString(),
                             Anno = (int)reader["Anno"],
                             Dal = (DateTime)reader["Dal"],
                             Al = (DateTime)reader["Al"],
@@ -77,6 +84,7 @@ namespace Esercizio_Gestione_Albergo.DataAccess
             }
             return prenotazioni;
         }
+
 
         public async Task<PrenotazioneViewModel> GetByIdAsync(int id)
         {
@@ -127,7 +135,7 @@ namespace Esercizio_Gestione_Albergo.DataAccess
 
                     command.Parameters.Add(new SqlParameter("@ClienteCodiceFiscale", SqlDbType.VarChar, 16) { Value = prenotazione.ClienteCodiceFiscale });
                     command.Parameters.Add(new SqlParameter("@CameraNumero", SqlDbType.Int) { Value = prenotazione.CameraNumero });
-                    command.Parameters.Add(new SqlParameter("@NumeroProgressivo", SqlDbType.VarChar, 15) { Value = DBNull.Value }); // Placeholder
+                    command.Parameters.Add(new SqlParameter("@NumeroProgressivo", SqlDbType.VarChar, 15) { Value = prenotazione.NumeroProgressivo });
                     command.Parameters.Add(new SqlParameter("@Anno", SqlDbType.Int) { Value = anno });
                     command.Parameters.Add(new SqlParameter("@Dal", SqlDbType.Date) { Value = prenotazione.Dal });
                     command.Parameters.Add(new SqlParameter("@Al", SqlDbType.Date) { Value = prenotazione.Al });
@@ -145,12 +153,12 @@ namespace Esercizio_Gestione_Albergo.DataAccess
                     _logger.LogDebug("ID della prenotazione inserita: {PrenotazioneId}", prenotazioneId);
 
 
-                    var availabilityCommand = GetCommand(UpdateCameraAvailabilityQuery, connection);
-                    availabilityCommand.Transaction = transaction;
-                    availabilityCommand.Parameters.Add(new SqlParameter("@Disponibile", SqlDbType.Bit) { Value = false });
-                    availabilityCommand.Parameters.Add(new SqlParameter("@Numero", SqlDbType.Int) { Value = prenotazione.CameraNumero });
+                    //var availabilityCommand = GetCommand(UpdateCameraAvailabilityQuery, connection);
+                    //availabilityCommand.Transaction = transaction;
+                    //availabilityCommand.Parameters.Add(new SqlParameter("@Disponibile", SqlDbType.Bit) { Value = false });
+                    //availabilityCommand.Parameters.Add(new SqlParameter("@Numero", SqlDbType.Int) { Value = prenotazione.CameraNumero });
 
-                    await availabilityCommand.ExecuteNonQueryAsync();
+                    //await availabilityCommand.ExecuteNonQueryAsync();
 
                     transaction.Commit();
 

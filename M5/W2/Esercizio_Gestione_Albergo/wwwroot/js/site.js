@@ -106,6 +106,7 @@
                 if (data.length !== 0) {
                     var numeroProgressivo = 'PR' + (data.length + 1);
                     $('#NumeroProgressivo').val(numeroProgressivo);
+                    var anno = data.dataPrenotazione.Date(yerar)
                 }
             },
             error: function () {
@@ -113,6 +114,13 @@
             }
         });
     }
+
+    //inserisce dentro l'input con id Anno l'anno della data ti prenotazione
+    $('#DataPrenotazione').on('change', function () {
+        var dataPrenotazione = new Date($(this).val());
+        var anno = dataPrenotazione.getFullYear();
+        $('#Anno').val(anno);
+    });
 
     // Chiamata alla funzione per generare NumeroProgressivo
     numeroProgressivoPrenotazione();

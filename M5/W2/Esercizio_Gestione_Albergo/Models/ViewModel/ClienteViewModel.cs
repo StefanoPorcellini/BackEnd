@@ -4,6 +4,6 @@ namespace Esercizio_Gestione_Albergo.ViewModels
 {
     public class ClienteViewModel : Cliente
     {
-        public List<PrenotazioneViewModel> Prenotazioni { get; set; }
+        public List<PrenotazioneViewModel> Prenotazioni { get; set; } = new List<PrenotazioneViewModel>();
     }
 }

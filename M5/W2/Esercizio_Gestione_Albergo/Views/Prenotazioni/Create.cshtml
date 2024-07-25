@@ -8,9 +8,15 @@
 <hr />
 
 <form asp-action="Create" method="post">
-    <div class="form-group">
-        <label for="NumeroProgressivo" class="control-label">Prenotazione N.:</label>
-        <input type="text" class="form-control" id="NumeroProgressivo" readonly />
+    <div class="d-flex gap-3">
+        <div class="form-group">
+            <label for="NumeroProgressivo" class="control-label">Prenotazione N.:</label>
+            <input type="text" class="form-control" id="NumeroProgressivo" readonly />
+        </div>
+        <div class="form-group">
+            <label for="Anno" class="control-label">Anno:</label>
+            <input type="text" class="form-control" id="Anno" readonly />
+        </div>
     </div>
     <div class="form-group">
         <label asp-for="ClienteCodiceFiscale" class="control-label">Cliente</label>
@@ -28,20 +34,22 @@
         <select id="CameraNumero" class="form-control"></select>
         <span asp-validation-for="CameraNumero" class="text-danger"></span>
     </div>
-    <div class="form-group">
-        <label asp-for="DataPrenotazione" class="control-label">Data Prenotazione</label>
-        <input asp-for="DataPrenotazione" class="form-control" />
-        <span asp-validation-for="DataPrenotazione" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Dal" class="control-label">Dal</label>
-        <input asp-for="Dal" class="form-control" type="date" id="Dal" />
-        <span asp-validation-for="Dal" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Al" class="control-label">Al</label>
-        <input asp-for="Al" class="form-control" type="date" id="Al" />
-        <span asp-validation-for="Al" class="text-danger"></span>
+    <div class="d-flex gap-3">
+        <div class="form-group">
+            <label asp-for="DataPrenotazione" class="control-label">Data Prenotazione</label>
+            <input asp-for="DataPrenotazione" class="form-control" />
+            <span asp-validation-for="DataPrenotazione" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Dal" class="control-label">Dal</label>
+            <input asp-for="Dal" class="form-control" type="date" id="Dal" />
+            <span asp-validation-for="Dal" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Al" class="control-label">Al</label>
+            <input asp-for="Al" class="form-control" type="date" id="Al" />
+            <span asp-validation-for="Al" class="text-danger"></span>
+        </div>
     </div>
     <div class="form-group">
         <label asp-for="CaparraConfirmatoria" class="control-label">Caparra</label>
