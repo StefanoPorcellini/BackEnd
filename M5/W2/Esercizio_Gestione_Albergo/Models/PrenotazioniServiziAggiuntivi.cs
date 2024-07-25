@@ -4,13 +4,11 @@ namespace Esercizio_Gestione_Albergo.Models
 {
     public class PrenotazioniServiziAggiuntivi
     {
+        
         [Key]
-        public int Id { get; set; }
-
-        [Required]
         public int PrenotazioneID { get; set; }
 
-        [Required]
+        [Key]
         public int ServizioAggiuntivoID { get; set; }
 
         [Required]
@@ -18,8 +16,5 @@ namespace Esercizio_Gestione_Albergo.Models
 
         [Required]
         public int Quantità { get; set; }
-
-        [Required]
-        public decimal Prezzo { get; set; }
     }
 }

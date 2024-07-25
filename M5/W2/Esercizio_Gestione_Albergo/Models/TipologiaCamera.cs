@@ -10,5 +10,7 @@ namespace Esercizio_Gestione_Albergo.Models
         [Required]
         [StringLength(50)]
         public string Descrizione { get; set; }
+        [Required]
+        public decimal Prezzo { get; set; }
     }
 }

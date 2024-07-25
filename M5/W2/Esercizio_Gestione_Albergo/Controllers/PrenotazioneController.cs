@@ -1,17 +1,20 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Esercizio_Gestione_Albergo.DataAccess;
-using Esercizio_Gestione_Albergo.Models;
 using Esercizio_Gestione_Albergo.ViewModels;
+using Esercizio_Gestione_Albergo.Models;
 
 namespace Esercizio_Gestione_Albergo.Controllers
 {
     public class PrenotazioniController : Controller
     {
         private readonly PrenotazioneDAO _prenotazioneDAO;
+        private readonly ILogger<PrenotazioniController> _logger;
 
-        public PrenotazioniController(IConfiguration configuration)
+
+        public PrenotazioniController(IConfiguration configuration, ILogger<PrenotazioniController> logger)
         {
             _prenotazioneDAO = new PrenotazioneDAO(configuration);
+            _logger = logger;
         }
 
         // GET: Prenotazioni
@@ -41,13 +44,39 @@ namespace Esercizio_Gestione_Albergo.Controllers
         // POST: Prenotazioni/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,ClienteCodiceFiscale,CameraNumero,DataPrenotazione,NumeroProgressivo,Anno,Dal,Al," +
-                                                      "CaparraConfirmatoria,Tariffa,DettagliSoggiornoId")] PrenotazioneViewModel prenotazione)
+        public async Task<IActionResult> 
+            Create([Bind("ClienteCodiceFiscale,CameraNumero,Dal,Al,CaparraConfirmatoria,Tariffa,DettagliSoggiornoId")] Prenotazione prenotazione)
         {
             if (ModelState.IsValid)
             {
-                await _prenotazioneDAO.AddAsync(prenotazione);
-                return RedirectToAction(nameof(Index));
+                _logger.LogInformation("Creazione di una nuova prenotazione con ClienteCodiceFiscale: " +
+                    "{ClienteCodiceFiscale}, CameraNumero: {CameraNumero}.", prenotazione.ClienteCodiceFiscale, prenotazione.CameraNumero);
+
+                // Verifica la disponibilità della camera
+                bool isAvailable = await _prenotazioneDAO.IsCameraAvailable(prenotazione.CameraNumero, prenotazione.Dal, prenotazione.Al);
+                if (!isAvailable)
+                {
+                    ModelState.AddModelError("", "La camera non è disponibile per le date selezionate.");
+                    _logger.LogWarning("La camera {CameraNumero} non è disponibile per le date dal {Dal} al {Al}.",
+                        prenotazione.CameraNumero, prenotazione.Dal, prenotazione.Al);
+
+                    return View(prenotazione);
+                }
+
+                try
+                {
+                    // Aggiungi la prenotazione
+                    await _prenotazioneDAO.AddAsync(prenotazione);
+                    _logger.LogInformation("Prenotazione creata con successo, ID: {PrenotazioneId}.", prenotazione.ID);
+
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", $"Errore durante la creazione della prenotazione: {ex.Message}");
+                    _logger.LogError(ex, "Errore durante la creazione della prenotazione.");
+
+                }
             }
             return View(prenotazione);
         }
@@ -80,17 +109,15 @@ namespace Esercizio_Gestione_Albergo.Controllers
                 {
                     // Aggiorna la prenotazione nel database
                     await _prenotazioneDAO.UpdateAsync(prenotazione);
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (Exception ex) 
+                catch (Exception ex)
                 {
-                    ModelState.AddModelError("", "An error occurred while updating the record. Please try again later.");
-                    return View(prenotazione);
+                    ModelState.AddModelError("", $"Errore durante l'aggiornamento della prenotazione: {ex.Message}");
                 }
-                return RedirectToAction(nameof(Index));
             }
             return View(prenotazione);
         }
-
 
         // GET: Prenotazioni/Delete
         public async Task<IActionResult> Delete(int id)
@@ -108,8 +135,17 @@ namespace Esercizio_Gestione_Albergo.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            await _prenotazioneDAO.DeleteAsync(id);
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                await _prenotazioneDAO.DeleteAsync(id);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", $"Errore durante l'eliminazione della prenotazione: {ex.Message}");
+                var prenotazione = await _prenotazioneDAO.GetByIdAsync(id);
+                return View("Delete", prenotazione);
+            }
         }
     }
 }

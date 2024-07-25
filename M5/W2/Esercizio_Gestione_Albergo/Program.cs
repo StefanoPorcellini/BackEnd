@@ -12,6 +12,7 @@ builder.Services.AddScoped<IClienteDAO, ClienteDAO>();
 builder.Services.AddScoped<IDettaglioSoggiornoDAO, DettagliSoggiornoDAO>();
 builder.Services.AddScoped<IServizioAggiuntivoDAO, ServizioAggiuntivoDAO>();
 builder.Services.AddScoped<ITipologiaCameraDAO, TipologiaCameraDAO>();
+builder.Services.AddScoped<ICameraDAO, CameraDAO>();
 
 
 var app = builder.Build();

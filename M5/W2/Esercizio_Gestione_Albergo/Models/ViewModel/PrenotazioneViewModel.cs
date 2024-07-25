@@ -9,6 +9,6 @@ namespace Esercizio_Gestione_Albergo.ViewModels
         public ClienteViewModel Cliente { get; set; }
         public CameraViewModel Camera { get; set; }
         public DettagliSoggiorno DettagliSoggiorno { get; set; }
-        public List<ServizioAggiuntivo> ServiziAggiuntivi { get; set; }
+        public List<PrenotazioniServiziAggiuntivi> ServiziAggiuntivi { get; set; }
     }
 }

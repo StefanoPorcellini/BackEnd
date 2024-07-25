@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Esercizio_Gestione_Albergo.Models
 {
@@ -18,8 +19,8 @@ namespace Esercizio_Gestione_Albergo.Models
         [Required]
         public DateTime DataPrenotazione { get; set; }
 
-        [Required]
-        public int NumeroProgressivo { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public string NumeroProgressivo { get; set; }
 
         [Required]
         public int Anno { get; set; }
@@ -35,8 +36,8 @@ namespace Esercizio_Gestione_Albergo.Models
 
         [Required]
         public decimal Tariffa { get; set; }
+        public decimal SaldoFinale { get; set; }
 
-        [Required]
         public int DettagliSoggiornoId { get; set; }
     }
 }

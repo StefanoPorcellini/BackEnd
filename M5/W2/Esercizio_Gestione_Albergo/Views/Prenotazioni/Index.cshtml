@@ -13,16 +13,15 @@
 <table class="table">
     <thead>
         <tr>
-            <th>ID</th>
+            <th>Numero Prenotazione</th>
             <th>Cliente Codice Fiscale</th>
             <th>Camera Numero</th>
             <th>Data Prenotazione</th>
-            <th>Numero Progressivo</th>
-            <th>Anno</th>
             <th>Dal</th>
             <th>Al</th>
             <th>Caparra Confirmatoria</th>
             <th>Tariffa</th>
+            <th>Saldo Finale</th>            
             <th></th>
         </tr>
     </thead>
@@ -30,12 +29,10 @@
         @foreach (var item in Model)
         {
             <tr>
-                <td>@item.ID</td>
+                <td>@item.NumeroProgressivo</td>
                 <td>@item.ClienteCodiceFiscale</td>
                 <td>@item.CameraNumero</td>
                 <td>@item.DataPrenotazione</td>
-                <td>@item.NumeroProgressivo</td>
-                <td>@item.Anno</td>
                 <td>@item.Dal</td>
                 <td>@item.Al</td>
                 <td>@item.CaparraConfirmatoria</td>

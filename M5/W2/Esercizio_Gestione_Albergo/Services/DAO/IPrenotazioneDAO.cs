@@ -8,8 +8,10 @@ namespace Esercizio_Gestione_Albergo.Services.DAO
     {
         public Task<IEnumerable<PrenotazioneViewModel>> GetAllAsync();
         public Task<PrenotazioneViewModel> GetByIdAsync(int id);
-        public Task AddAsync(PrenotazioneViewModel prenotazione);
+        public Task AddAsync(Prenotazione prenotazione);
         public Task UpdateAsync(PrenotazioneViewModel prenotazione);
         public Task DeleteAsync(int id);
+        public Task<decimal> CalcoloTariffaAsync(int cameraNumero, int dettaglioSoggiornoId, int giorni);
+
     }
 }

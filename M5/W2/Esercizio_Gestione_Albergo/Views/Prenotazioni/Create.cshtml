@@ -1,4 +1,4 @@
-﻿@model Esercizio_Gestione_Albergo.ViewModels.PrenotazioneViewModel
+﻿@model Esercizio_Gestione_Albergo.Models.Prenotazione
 @{
     ViewData["Title"] = "Nuova Prenotazione";
 }
@@ -7,65 +7,57 @@
 
 <hr />
 
-    <form asp-action="Create">
+<form asp-action="Create">
     <div class="form-group">
-        <label asp-for="ClienteCodiceFiscale" class="control-label">Cliente</label>
-        <select id="ClienteCodiceFiscale" asp-for="ClienteCodiceFiscale" class="form-control"></select>
+        <label asp-for="ClienteCodiceFiscale" class="control-label"></label>
+        <div class="input-group">
+            <select id="ClienteCodiceFiscale" asp-for="ClienteCodiceFiscale" class="form-control"></select>
+            <span class="input-group-btn">
+                <a asp-controller="Cliente" asp-action="Create" class="btn btn-success">Crea Nuovo Cliente</a>
+            </span>
+        </div>
         <span asp-validation-for="ClienteCodiceFiscale" class="text-danger"></span>
     </div>
+
     <div class="form-group">
-            <label asp-for="CameraNumero" class="control-label"></label>
-            <input asp-for="CameraNumero" class="form-control" />
-            <span asp-validation-for="CameraNumero" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="DataPrenotazione" class="control-label"></label>
-            <input asp-for="DataPrenotazione" class="form-control" />
-            <span asp-validation-for="DataPrenotazione" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="NumeroProgressivo" class="control-label"></label>
-            <input asp-for="NumeroProgressivo" class="form-control" />
-            <span asp-validation-for="NumeroProgressivo" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="Anno" class="control-label"></label>
-            <input asp-for="Anno" class="form-control" />
-            <span asp-validation-for="Anno" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="Dal" class="control-label"></label>
-            <input asp-for="Dal" class="form-control" />
-            <span asp-validation-for="Dal" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="Al" class="control-label"></label>
-            <input asp-for="Al" class="form-control" />
-            <span asp-validation-for="Al" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="CaparraConfirmatoria" class="control-label"></label>
-            <input asp-for="CaparraConfirmatoria" class="form-control" />
-            <span asp-validation-for="CaparraConfirmatoria" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="Tariffa" class="control-label"></label>
-            <input asp-for="Tariffa" class="form-control" />
-            <span asp-validation-for="Tariffa" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label for="DettaglioSoggiorno" class="control-label">Dettaglio Soggiorno</label>
-            <select id="DettaglioSoggiorno" class="form-control"></select>
-        </div>
-        <div class="form-group">
-            <label for="ServiziAggiuntivi" class="control-label">Servizi Aggiuntivi</label>
-            <select id="ServiziAggiuntivi" class="form-control"></select>
-        </div>
-        <div class="form-group">
-            <label for="TipologiaCamera" class="control-label">Tipologia Camera</label>
-            <select id="TipologiaCamera" class="form-control"></select>
-        </div>
-        <div class="form-group">
-            <input type="submit" value="Create" class="btn btn-primary" />
-        </div>
-    </form>
+        <label asp-for="CameraNumero" class="control-label">Camera</label>
+        <select id="CameraNumero" class="form-control"></select>
+        <span asp-validation-for="CameraNumero" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="DataPrenotazione" class="control-label">Data Prenotazione</label>
+        <input asp-for="DataPrenotazione" class="form-control" />
+        <span asp-validation-for="DataPrenotazione" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Dal" class="control-label">Dal</label>
+        <input asp-for="Dal" class="form-control" type="date" id="Dal" />
+        <span asp-validation-for="Dal" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Al" class="control-label">Al</label>
+        <input asp-for="Al" class="form-control" type="date" id="Al" />
+        <span asp-validation-for="Al" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="CaparraConfirmatoria" class="control-label">Caparra</label>
+        <input asp-for="CaparraConfirmatoria" class="form-control" id="CaparraConfirmatoria" />
+        <span asp-validation-for="CaparraConfirmatoria" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label for="DettaglioSoggiorno" class="control-label">Dettaglio Soggiorno</label>
+        <select id="DettaglioSoggiorno" class="form-control"></select>
+    </div>
+    <div class="form-group">
+        <label asp-for="Tariffa" class="control-label">Tariffa</label>
+        <input asp-for="Tariffa" class="form-control" id="Tariffa" readonly />
+        <span asp-validation-for="Tariffa" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label for="SaldoFinale" class="control-label">Saldo Finale</label>
+        <input type="text" class="form-control" id="SaldoFinale" readonly />
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Create" class="btn btn-primary" />
+    </div>
+</form>

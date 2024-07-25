@@ -10,12 +10,13 @@ namespace Esercizio_Gestione_Albergo.Models
 
         [Required]
         [StringLength(255)]
-        public string Descrizione { get; set; }
+        public string Desc { get; set; }
+        public bool Disponibile { get; set; } = true;
 
         [ForeignKey("Tipologia")]
         public int TipologiaId { get; set; }
 
-        public TipologiaCamera Tipologia { get; set; }
+        public double Coefficiente { get; set; }
 
     }
 }
