@@ -16,18 +16,12 @@ namespace Esercizio_Gestione_Albergo.DataAccess
             _logger = logger;
         }
 
-
         private const string GetAllQuery = "SELECT * FROM Prenotazioni";
-
         private const string GetByIdQuery = "SELECT * FROM Prenotazioni WHERE ID = @ID";
+        private const string InsertQuery = "INSERT INTO Prenotazioni (ClienteCodiceFiscale, CameraNumero, DataPrenotazione, NumeroProgressivo, Anno, Dal, Al, CaparraConfirmatoria, Tariffa, DettagliSoggiornoId, SaldoFinale) " +
+                                            "VALUES (@ClienteCodiceFiscale, @CameraNumero, GETDATE(), @NumeroProgressivo, @Anno, @Dal, @Al, @CaparraConfirmatoria, @Tariffa, @DettagliSoggiornoId, @SaldoFinale); SELECT SCOPE_IDENTITY();";
 
-        private const string InsertQuery = "INSERT INTO Prenotazioni (ClienteCodiceFiscale, CameraNumero, DataPrenotazione, NumeroProgressivo, " +
-                                            "Anno, Dal, Al, CaparraConfirmatoria, Tariffa, DettagliSoggiornoId, SaldoFinale) " +
-                                            "VALUES (@ClienteCodiceFiscale, @CameraNumero, GETDATE(), @NumeroProgressivo, @Anno, @Dal, @Al, " +
-                                            "@CaparraConfirmatoria, @Tariffa, @DettagliSoggiornoId, @SaldoFinale); SELECT SCOPE_IDENTITY();";
-
-
-        private const string UpdateQuery =  "UPDATE Prenotazioni SET ClienteCodiceFiscale = @ClienteCodiceFiscale, CameraNumero = @CameraNumero, " +
+        private const string UpdateQuery = "UPDATE Prenotazioni SET ClienteCodiceFiscale = @ClienteCodiceFiscale, CameraNumero = @CameraNumero, " +
                                             "DataPrenotazione = @DataPrenotazione, NumeroProgressivo = @NumeroProgressivo, Anno = @Anno, Dal = @Dal, " +
                                             "Al = @Al, CaparraConfirmatoria = @CaparraConfirmatoria, Tariffa = @Tariffa, SaldoFinale = @SaldoFinale, " +
                                             "DettagliSoggiornoId = @DettagliSoggiornoId WHERE ID = @ID";
@@ -45,14 +39,12 @@ namespace Esercizio_Gestione_Albergo.DataAccess
                                                             )";
 
         private const string UpdateCameraAvailabilityQuery = "UPDATE Camere SET Disponibile = @Disponibile WHERE Numero = @Numero";
-            
-        private const string CalcoloTariffa =   "SELECT (ds.Prezzo + (tc.Prezzo * c.Coefficiente) * @Giorni) AS Tariffa " +
-                                                "FROM Camere c " +
-                                                "JOIN TipologieCamere tc ON c.TipologiaId = tc.Id " +
-                                                "JOIN DettagliSoggiorno ds ON ds.Id = @DettaglioSoggiornoId " +
-                                                "WHERE c.Numero = @CameraNumero";
 
-        public PrenotazioneDAO(IConfiguration config) : base(config) { }
+        private const string CalcoloTariffa = "SELECT (ds.Prezzo + (tc.Prezzo * c.Coefficiente) * @Giorni) AS Tariffa " +
+                                               "FROM Camere c " +
+                                               "JOIN TipologieCamere tc ON c.TipologiaId = tc.Id " +
+                                               "JOIN DettagliSoggiorno ds ON ds.Id = @DettaglioSoggiornoId " +
+                                               "WHERE c.Numero = @CameraNumero";
 
         public async Task<IEnumerable<PrenotazioneViewModel>> GetAllAsync()
         {
@@ -122,23 +114,20 @@ namespace Esercizio_Gestione_Albergo.DataAccess
 
         public async Task AddAsync(Prenotazione prenotazione)
         {
-            
             using (var connection = GetConnection())
             {
                 await connection.OpenAsync();
                 var transaction = connection.BeginTransaction();
                 try
                 {
-                    // Estrai l'anno dalla data di inizio
                     int anno = prenotazione.Dal.Year;
 
                     var command = GetCommand(InsertQuery, connection);
                     command.Transaction = transaction;
 
-                    // Setta i parametri
                     command.Parameters.Add(new SqlParameter("@ClienteCodiceFiscale", SqlDbType.VarChar, 16) { Value = prenotazione.ClienteCodiceFiscale });
                     command.Parameters.Add(new SqlParameter("@CameraNumero", SqlDbType.Int) { Value = prenotazione.CameraNumero });
-                    command.Parameters.Add(new SqlParameter("@NumeroProgressivo", SqlDbType.VarChar, 15));
+                    command.Parameters.Add(new SqlParameter("@NumeroProgressivo", SqlDbType.VarChar, 15) { Value = DBNull.Value }); // Placeholder
                     command.Parameters.Add(new SqlParameter("@Anno", SqlDbType.Int) { Value = anno });
                     command.Parameters.Add(new SqlParameter("@Dal", SqlDbType.Date) { Value = prenotazione.Dal });
                     command.Parameters.Add(new SqlParameter("@Al", SqlDbType.Date) { Value = prenotazione.Al });
@@ -147,23 +136,14 @@ namespace Esercizio_Gestione_Albergo.DataAccess
                     command.Parameters.Add(new SqlParameter("@DettagliSoggiornoId", SqlDbType.Int) { Value = prenotazione.DettagliSoggiornoId });
                     command.Parameters.Add(new SqlParameter("@SaldoFinale", SqlDbType.Decimal) { Value = prenotazione.SaldoFinale });
 
-                    // Log prima di eseguire la query
                     _logger.LogDebug("Esecuzione della query di inserimento con i seguenti parametri: ClienteCodiceFiscale={ClienteCodiceFiscale}, CameraNumero={CameraNumero}, Anno={Anno}, Dal={Dal}, Al={Al}, CaparraConfirmatoria={CaparraConfirmatoria}, Tariffa={Tariffa}, DettagliSoggiornoId={DettagliSoggiornoId}, SaldoFinale={SaldoFinale}",
                         prenotazione.ClienteCodiceFiscale, prenotazione.CameraNumero, anno, prenotazione.Dal, prenotazione.Al, prenotazione.CaparraConfirmatoria, prenotazione.Tariffa, prenotazione.DettagliSoggiornoId, prenotazione.SaldoFinale);
 
                     var result = await command.ExecuteScalarAsync();
                     var prenotazioneId = Convert.ToInt32(result);
 
-                    // Log del risultato dell'inserimento
                     _logger.LogDebug("ID della prenotazione inserita: {PrenotazioneId}", prenotazioneId);
 
-                    var numeroProgressivo = $"PR{prenotazioneId}";
-                    var updateCommand = GetCommand("UPDATE Prenotazioni SET NumeroProgressivo = @NumeroProgressivo WHERE ID = @ID", connection);
-                    updateCommand.Transaction = transaction;
-                    updateCommand.Parameters.Add(new SqlParameter("@NumeroProgressivo", SqlDbType.VarChar, 15) { Value = numeroProgressivo });
-                    updateCommand.Parameters.Add(new SqlParameter("@ID", SqlDbType.Int) { Value = prenotazioneId });
-
-                    await updateCommand.ExecuteNonQueryAsync();
 
                     var availabilityCommand = GetCommand(UpdateCameraAvailabilityQuery, connection);
                     availabilityCommand.Transaction = transaction;
@@ -174,7 +154,6 @@ namespace Esercizio_Gestione_Albergo.DataAccess
 
                     transaction.Commit();
 
-                    // Log di successo
                     _logger.LogInformation("Prenotazione aggiunta e numero progressivo aggiornato con successo: ID={PrenotazioneId}", prenotazioneId);
                 }
                 catch (Exception ex)
@@ -185,9 +164,6 @@ namespace Esercizio_Gestione_Albergo.DataAccess
                 }
             }
         }
-
-
-
 
         public async Task UpdateAsync(PrenotazioneViewModel prenotazione)
         {
@@ -206,6 +182,7 @@ namespace Esercizio_Gestione_Albergo.DataAccess
                 command.Parameters.Add(new SqlParameter("@CaparraConfirmatoria", SqlDbType.Decimal) { Value = prenotazione.CaparraConfirmatoria });
                 command.Parameters.Add(new SqlParameter("@Tariffa", SqlDbType.Decimal) { Value = prenotazione.Tariffa });
                 command.Parameters.Add(new SqlParameter("@DettagliSoggiornoId", SqlDbType.Int) { Value = prenotazione.DettagliSoggiornoId });
+                command.Parameters.Add(new SqlParameter("@SaldoFinale", SqlDbType.Decimal) { Value = prenotazione.SaldoFinale });
 
                 await command.ExecuteNonQueryAsync();
             }
@@ -223,7 +200,7 @@ namespace Esercizio_Gestione_Albergo.DataAccess
             }
         }
 
-        public async Task<bool> IsCameraAvailable(int cameraNumero, DateTime dal, DateTime al)
+        public async Task<bool> IsCameraAvailableAsync(int cameraNumero, DateTime dal, DateTime al)
         {
             using (var connection = GetConnection())
             {
@@ -242,13 +219,13 @@ namespace Esercizio_Gestione_Albergo.DataAccess
         public async Task<decimal> CalcoloTariffaAsync(int cameraNumero, int dettaglioSoggiornoId, int giorni)
         {
             decimal tariffa = 0;
-            using(var connection = GetConnection())
+            using (var connection = GetConnection())
             {
                 await connection.OpenAsync();
                 var command = GetCommand(CalcoloTariffa, connection);
-                command.Parameters.Add(new SqlParameter("@Giorni", giorni));
-                command.Parameters.Add(new SqlParameter("@CameraNumero", cameraNumero));
-                command.Parameters.Add(new SqlParameter("@DettaglioSoggiornoId", dettaglioSoggiornoId));
+                command.Parameters.Add(new SqlParameter("@Giorni", SqlDbType.Int) { Value = giorni });
+                command.Parameters.Add(new SqlParameter("@CameraNumero", SqlDbType.Int) { Value = cameraNumero });
+                command.Parameters.Add(new SqlParameter("@DettaglioSoggiornoId", SqlDbType.Int) { Value = dettaglioSoggiornoId });
 
                 tariffa = (decimal)await command.ExecuteScalarAsync();
             }

@@ -1,5 +1,5 @@
 ﻿$(document).ready(function () {
-    populateSelect('/api/Api/clienti', '#ClienteCodiceFiscale');
+    populateSelect('/api/Api/clienti', '#ClienteCodiceFiscale', 'codiceFiscale');
     populateSelect('/api/Api/dettaglio-soggiorno', '#DettaglioSoggiorno');
     populateSelect('/api/Api/servizi-aggiuntivi', '#ServiziAggiuntivi');
     populateSelect('/api/Api/tipologie-camere', '#TipologiaCamera');
@@ -97,5 +97,25 @@
         }
     }
 
+    function numeroProgressivoPrenotazione() {
+        $.ajax({
+            url: `/api/Api/prenotazioni`,
+            method: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                if (data.length !== 0) {
+                    var numeroProgressivo = 'PR' + (data.length + 1);
+                    $('#NumeroProgressivo').val(numeroProgressivo);
+                }
+            },
+            error: function () {
+                alert('Errore durante il caricamento delle prenotazioni.');
+            }
+        });
+    }
+
+    // Chiamata alla funzione per generare NumeroProgressivo
+    numeroProgressivoPrenotazione();
+    // Chiamata alla funzione per calcolare la tariffa
     calculateTariffa();
 });

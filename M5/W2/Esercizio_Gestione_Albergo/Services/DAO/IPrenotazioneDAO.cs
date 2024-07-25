@@ -12,6 +12,8 @@ namespace Esercizio_Gestione_Albergo.Services.DAO
         public Task UpdateAsync(PrenotazioneViewModel prenotazione);
         public Task DeleteAsync(int id);
         public Task<decimal> CalcoloTariffaAsync(int cameraNumero, int dettaglioSoggiornoId, int giorni);
+        public Task<bool> IsCameraAvailableAsync(int cameraNumero, DateTime dal, DateTime al);
+
 
     }
 }

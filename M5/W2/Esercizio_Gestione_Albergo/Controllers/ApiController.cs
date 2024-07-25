@@ -82,5 +82,13 @@ namespace Esercizio_Gestione_Albergo.Controllers
             }
         }
 
+        // Nuovo metodo per ottenere tutte le prenotazioni
+        [HttpGet("prenotazioni")]
+        public async Task<ActionResult<IEnumerable<Prenotazione>>> GetPrenotazioni()
+        {
+            var prenotazioni = await _prenotazioneDAO.GetAllAsync();
+            return Ok(prenotazioni);
+        }
+
     }
 }

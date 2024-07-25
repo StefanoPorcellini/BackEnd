@@ -7,9 +7,13 @@
 
 <hr />
 
-<form asp-action="Create">
+<form asp-action="Create" method="post">
     <div class="form-group">
-        <label asp-for="ClienteCodiceFiscale" class="control-label"></label>
+        <label for="NumeroProgressivo" class="control-label">Prenotazione N.:</label>
+        <input type="text" class="form-control" id="NumeroProgressivo" readonly />
+    </div>
+    <div class="form-group">
+        <label asp-for="ClienteCodiceFiscale" class="control-label">Cliente</label>
         <div class="input-group">
             <select id="ClienteCodiceFiscale" asp-for="ClienteCodiceFiscale" class="form-control"></select>
             <span class="input-group-btn">
@@ -61,3 +65,4 @@
         <input type="submit" value="Create" class="btn btn-primary" />
     </div>
 </form>
+
