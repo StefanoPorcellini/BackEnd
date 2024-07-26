@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Esercizio_Gestione_Albergo.DataAccess;
 using Esercizio_Gestione_Albergo.ViewModels;
 using Esercizio_Gestione_Albergo.Models;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Configuration;
 using Esercizio_Gestione_Albergo.Services.DAO;
 
 namespace Esercizio_Gestione_Albergo.Controllers
@@ -62,17 +59,21 @@ namespace Esercizio_Gestione_Albergo.Controllers
         // POST: Prenotazioni/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ClienteCodiceFiscale,CameraNumero,Dal,Al,CaparraConfirmatoria,Tariffa,DettagliSoggiornoId")] Prenotazione prenotazione)
+        public async Task<IActionResult> Create([Bind(
+            "ClienteCodiceFiscale, CameraNumero, DataPrenotazione, NumeroProgressivo, Anno, Dal, Al, CaparraConfirmatoria, " +
+            "Tariffa, DettagliSoggiornoId, SaldoFinale")] Prenotazione prenotazione)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _logger.LogInformation("Creazione di una nuova prenotazione con ClienteCodiceFiscale: {ClienteCodiceFiscale}, CameraNumero: {CameraNumero}.",
+                    _logger.LogInformation(
+                        "Creazione di una nuova prenotazione con ClienteCodiceFiscale: {ClienteCodiceFiscale}, CameraNumero: {CameraNumero}.",
                         prenotazione.ClienteCodiceFiscale, prenotazione.CameraNumero);
 
                     // Verifica la disponibilità della camera
-                    bool isAvailable = await _prenotazioneDAO.IsCameraAvailableAsync(prenotazione.CameraNumero, prenotazione.Dal, prenotazione.Al);
+                    bool isAvailable = await _prenotazioneDAO.IsCameraAvailableAsync(
+                        prenotazione.CameraNumero, prenotazione.Dal, prenotazione.Al);
                     if (!isAvailable)
                     {
                         ModelState.AddModelError("", "La camera non è disponibile per le date selezionate.");

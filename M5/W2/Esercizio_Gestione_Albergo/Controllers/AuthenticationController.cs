@@ -1,10 +1,8 @@
 ﻿using Esercizio_Gestione_Albergo.Models.Login;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.IdentityModel.JsonWebTokens;
-using System.Reflection;
 using System.Security.Claims;
 using Esercizio_Gestione_Albergo.Services.Auth;
 

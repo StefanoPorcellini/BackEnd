@@ -1,0 +1,92 @@
+﻿@model Esercizio_Gestione_Albergo.Models.Prenotazione
+
+@{
+    ViewData["Title"] = "Elimina Prenotazione";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<h3>Sei sicuro di voler eliminare questa prenotazione?</h3>
+<div>
+    <h4>Prenotazione</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ID)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.ID)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ClienteCodiceFiscale)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.ClienteCodiceFiscale)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.CameraNumero)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.CameraNumero)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.DataPrenotazione)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.DataPrenotazione)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.NumeroProgressivo)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.NumeroProgressivo)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Anno)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Anno)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Dal)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Dal)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Al)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Al)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.CaparraConfirmatoria)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.CaparraConfirmatoria)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Tariffa)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Tariffa)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.SaldoFinale)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.SaldoFinale)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.DettagliSoggiornoId)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.DettagliSoggiornoId)
+        </dd>
+    </dl>
+    
+    <form asp-action="Delete">
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <a asp-action="Index">Back to List</a>
+    </form>
+</div>

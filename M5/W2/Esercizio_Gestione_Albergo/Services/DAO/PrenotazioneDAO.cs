@@ -25,8 +25,10 @@ namespace Esercizio_Gestione_Albergo.DataAccess
 
         private const string GetByIdQuery = "SELECT * FROM Prenotazioni WHERE ID = @ID";
 
-        private const string InsertQuery = "INSERT INTO Prenotazioni (ClienteCodiceFiscale, CameraNumero, DataPrenotazione, NumeroProgressivo, Anno, Dal, Al, CaparraConfirmatoria, Tariffa, DettagliSoggiornoId, SaldoFinale) " +
-                                            "VALUES (@ClienteCodiceFiscale, @CameraNumero, GETDATE(), @NumeroProgressivo, @Anno, @Dal, @Al, @CaparraConfirmatoria, @Tariffa, @DettagliSoggiornoId, @SaldoFinale); SELECT SCOPE_IDENTITY();";
+        private const string InsertQuery =  "INSERT INTO Prenotazioni (ClienteCodiceFiscale, CameraNumero, DataPrenotazione, NumeroProgressivo, " +
+                                            "Anno, Dal, Al, CaparraConfirmatoria, Tariffa, DettagliSoggiornoId, SaldoFinale) " +
+                                            "VALUES (@ClienteCodiceFiscale, @CameraNumero, GETDATE(), @NumeroProgressivo, @Anno, @Dal, @Al, " +
+                                            "@CaparraConfirmatoria, @Tariffa, @DettagliSoggiornoId, @SaldoFinale); SELECT SCOPE_IDENTITY();";
 
         private const string UpdateQuery = "UPDATE Prenotazioni SET ClienteCodiceFiscale = @ClienteCodiceFiscale, CameraNumero = @CameraNumero, " +
                                             "DataPrenotazione = @DataPrenotazione, NumeroProgressivo = @NumeroProgressivo, Anno = @Anno, Dal = @Dal, " +
@@ -152,13 +154,13 @@ namespace Esercizio_Gestione_Albergo.DataAccess
 
                     _logger.LogDebug("ID della prenotazione inserita: {PrenotazioneId}", prenotazioneId);
 
+                    // cambia la disponibilità della camera
+                    var availabilityCommand = GetCommand(UpdateCameraAvailabilityQuery, connection);
+                    availabilityCommand.Transaction = transaction;
+                    availabilityCommand.Parameters.Add(new SqlParameter("@Disponibile", SqlDbType.Bit) { Value = false });
+                    availabilityCommand.Parameters.Add(new SqlParameter("@Numero", SqlDbType.Int) { Value = prenotazione.CameraNumero });
 
-                    //var availabilityCommand = GetCommand(UpdateCameraAvailabilityQuery, connection);
-                    //availabilityCommand.Transaction = transaction;
-                    //availabilityCommand.Parameters.Add(new SqlParameter("@Disponibile", SqlDbType.Bit) { Value = false });
-                    //availabilityCommand.Parameters.Add(new SqlParameter("@Numero", SqlDbType.Int) { Value = prenotazione.CameraNumero });
-
-                    //await availabilityCommand.ExecuteNonQueryAsync();
+                    await availabilityCommand.ExecuteNonQueryAsync();
 
                     transaction.Commit();
 
