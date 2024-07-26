@@ -144,45 +144,39 @@ namespace Esercizio_Gestione_Albergo.DataAccess
             }
         }
 
-
         public async Task Delete(string codiceFiscale)
         {
-            // Verifica se il parametro non è nullo o vuoto
             if (string.IsNullOrEmpty(codiceFiscale))
             {
                 throw new ArgumentException("Il codice fiscale non può essere nullo o vuoto.", nameof(codiceFiscale));
             }
 
-
             using (var connection = GetConnection())
             {
                 await connection.OpenAsync();
-
                 using (var command = GetCommand(DeleteQuery, connection))
                 {
-                    // Aggiungi il parametro al comando
                     command.Parameters.Add(new SqlParameter("@CodiceFiscale", SqlDbType.VarChar, 16) { Value = codiceFiscale });
 
                     try
                     {
-                        // Esegui la query
                         int rowsAffected = await command.ExecuteNonQueryAsync();
 
                         if (rowsAffected == 0)
                         {
-                            // Opzionale: Puoi gestire il caso in cui nessun record è stato eliminato
                             throw new InvalidOperationException("Nessun cliente trovato con il codice fiscale specificato.");
                         }
                     }
                     catch (SqlException ex)
                     {
-                        // Gestisci eccezioni di SQL
                         Console.WriteLine($"Si è verificato un errore durante l'eliminazione del cliente: {ex.Message}");
-                        throw; // Rilancia l'eccezione per la gestione a un livello superiore
+                        throw;
                     }
                 }
             }
         }
+
+
 
     }
 }

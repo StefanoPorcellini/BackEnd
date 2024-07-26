@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Esercizio_Gestione_Albergo.ViewModels;
 using Esercizio_Gestione_Albergo.Services.DAO;
+using Esercizio_Gestione_Albergo.Models;
 
 
 namespace Esercizio_Gestione_Albergo.Controllers
@@ -136,16 +137,22 @@ namespace Esercizio_Gestione_Albergo.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string codiceFiscale)
         {
-            await _clienteDAO.Delete(codiceFiscale);
+            try
+            {
+                await _clienteDAO.Delete(codiceFiscale);
+                _logger.LogInformation($"Cliente con codice fiscale {codiceFiscale} eliminato con successo.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Errore durante l'eliminazione del cliente con codice fiscale {codiceFiscale}.");
+                ModelState.AddModelError(string.Empty, "Errore durante l'eliminazione del cliente.");
+                return View("Error", new ErrorViewModel { RequestId = ex.Message });
+            }
+
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: Cliente/Create
-        public IActionResult Create()
-        {
-            _logger.LogInformation("GET Create method called.");
-            return View();
-        }
+
 
         // POST: Cliente/Create
         [HttpPost]

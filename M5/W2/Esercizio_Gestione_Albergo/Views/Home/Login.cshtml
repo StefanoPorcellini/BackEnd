@@ -1,0 +1,59 @@
+﻿@model Esercizio_Gestione_Albergo.Models.Login.LoginModel
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form id="loginForm" method="post">
+    <div class="form-group">
+        <label for="Username">Username</label>
+        <input type="text" class="form-control" id="Username" name="Username" required />
+    </div>
+    <div class="form-group">
+        <label for="Password">Password</label>
+        <input type="password" class="form-control" id="Password" name="Password" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Login</button>
+    <div id="errorMessage" style="color: red; margin-top: 10px;">
+        @ViewBag.ErrorMessage
+    </div>
+</form>
+
+@section Scripts {
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async function (event) {
+            event.preventDefault(); // Previene l'invio del modulo di default
+
+            const formData = new FormData(event.target);
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+                const response = await fetch('/Home/Login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: new URLSearchParams(data).toString()
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+
+                    // Salva il token nel sessionStorage
+                    sessionStorage.setItem('authToken', result.Token);
+                    sessionStorage.setItem('userId', result.UserId);
+
+                    // Reindirizza alla home page
+                    window.location.href = '@Url.Action("Index", "Home")';
+                } else {
+                    const error = await response.text();
+                    document.getElementById('errorMessage').textContent = 'Login failed: ' + error;
+                }
+            } catch (error) {
+                document.getElementById('errorMessage').textContent = 'An error occurred: ' + error.message;
+            }
+        });
+    </script>
+}
