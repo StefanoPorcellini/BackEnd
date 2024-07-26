@@ -7,7 +7,7 @@
 <h1>@ViewData["Title"]</h1>
 
 <p>
-    <a asp-action="Create" class="btn btn-primary">Nuova Prenotazione</a>
+    <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-circle"></i> Crea Nuova Prenotazione</a>
 </p>
 
 <table class="table">
@@ -38,9 +38,9 @@
                 <td>@item.CaparraConfirmatoria</td>
                 <td>@item.Tariffa</td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-warning">Edit</a>
-                    <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-info">Details</a>
-                    <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-danger">Delete</a>
+                    <a asp-action="Dettagli" asp-route-id="@item.ID" class="btn btn-info"><i class="bi bi-zoom-in"></i></a>
+                    <a asp-action="Modifica" asp-route-id="@item.ID" class="btn btn-warning"><i class="bi bi-pencil-square"></i></a>
+                    <a asp-action="Elimina" asp-route-id="@item.ID" class="btn btn-danger"><i class="bi bi-trash"></i></a>
                 </td>
             </tr>
         }

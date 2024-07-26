@@ -7,7 +7,7 @@
 <h1>@ViewData["Title"]</h1>
 
 <div class="mb-3">
-    <a asp-action="Create" class="btn btn-success">Crea Nuovo Cliente</a>
+    <a asp-action="Create" class="btn btn-success"><i class="bi bi-plus-circle"></i> Crea Nuovo Cliente</a>
 </div>
 
 
@@ -38,9 +38,9 @@
                 <td>@cliente.Telefono</td>
                 <td>@cliente.Cellulare</td>
                 <td>
-                    <a asp-action="Details" asp-route-codiceFiscale="@cliente.CodiceFiscale" class="btn btn-info">Dettagli</a>
-                    <a asp-action="Edit" asp-route-codiceFiscale="@cliente.CodiceFiscale" class="btn btn-warning">Modifica</a>
-                    <a asp-action="Delete" asp-route-codiceFiscale="@cliente.CodiceFiscale" class="btn btn-danger">Elimina</a>
+                    <a asp-action="Details" asp-route-codiceFiscale="@cliente.CodiceFiscale" class="btn btn-info"><i class="bi bi-zoom-in"></i></a>
+                    <a asp-action="Edit" asp-route-codiceFiscale="@cliente.CodiceFiscale" class="btn btn-warning"><i class="bi bi-pencil-square"></i></a>
+                    <a asp-action="Delete" asp-route-codiceFiscale="@cliente.CodiceFiscale" class="btn btn-danger"><i class="bi bi-trash"></i></a>
                 </td>
             </tr>
         }

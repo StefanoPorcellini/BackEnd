@@ -137,6 +137,7 @@ namespace Esercizio_Gestione_Albergo.DataAccess
 
                     command.Parameters.Add(new SqlParameter("@ClienteCodiceFiscale", SqlDbType.VarChar, 16) { Value = prenotazione.ClienteCodiceFiscale });
                     command.Parameters.Add(new SqlParameter("@CameraNumero", SqlDbType.Int) { Value = prenotazione.CameraNumero });
+                    command.Parameters.Add(new SqlParameter("@DataPrenotazione", SqlDbType.Date) { Value = prenotazione.DataPrenotazione });
                     command.Parameters.Add(new SqlParameter("@NumeroProgressivo", SqlDbType.VarChar, 15) { Value = prenotazione.NumeroProgressivo });
                     command.Parameters.Add(new SqlParameter("@Anno", SqlDbType.Int) { Value = anno });
                     command.Parameters.Add(new SqlParameter("@Dal", SqlDbType.Date) { Value = prenotazione.Dal });

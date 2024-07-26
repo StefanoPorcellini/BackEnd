@@ -39,7 +39,7 @@
                 select.empty(); // Pulisce le precedenti opzioni
                 select.append('<option value="">Seleziona...</option>');
                 $.each(data, function (index, item) {
-                    var optionText = ('Camera n°' + item.numero); // Usa stringa personalizzata per il testo dell'opzione
+                    var optionText = 'Camera n°' + item.numero; // Usa stringa personalizzata per il testo dell'opzione
                     select.append($('<option>', {
                         value: item[valueField], // Usa il campo specificato per il valore dell'opzione
                         text: optionText
@@ -106,7 +106,8 @@
                 if (data.length !== 0) {
                     var numeroProgressivo = 'PR' + (data.length + 1);
                     $('#NumeroProgressivo').val(numeroProgressivo);
-                    var anno = data.dataPrenotazione.Date(yerar)
+                } else {
+                    $('#NumeroProgressivo').val('PR1');
                 }
             },
             error: function () {
@@ -115,7 +116,7 @@
         });
     }
 
-    //inserisce dentro l'input con id Anno l'anno della data ti prenotazione
+    //inserisce dentro l'input con id Anno l'anno della data di prenotazione
     $('#DataPrenotazione').on('change', function () {
         var dataPrenotazione = new Date($(this).val());
         var anno = dataPrenotazione.getFullYear();

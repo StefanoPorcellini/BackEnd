@@ -1,4 +1,4 @@
-﻿@model Esercizio_Gestione_Albergo.Cliente
+﻿@model Esercizio_Gestione_Albergo.Cliente //non so perchè questo modello me lo vede fuori dalla cartella anche se in realtà è dentro la cartella Models
 @{
     ViewData["Title"] = "Crea Nuovo Cliente";
 }
@@ -10,6 +10,7 @@
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create" method="post">
+            @Html.AntiForgeryToken()
             <div class="form-group">
                 <label asp-for="CodiceFiscale" class="control-label"></label>
                 <input asp-for="CodiceFiscale" class="form-control" />
@@ -54,5 +55,7 @@
                 <input type="submit" value="Crea" class="btn btn-primary" />
             </div>
         </form>
+        <a asp-action="Index" class="btn btn-secondary"><i class="bi bi-arrow-left-circle"></i></a>
+
     </div>
 </div>

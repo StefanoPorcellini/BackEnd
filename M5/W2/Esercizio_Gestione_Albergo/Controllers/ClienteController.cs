@@ -2,10 +2,12 @@
 using Esercizio_Gestione_Albergo.ViewModels;
 using Esercizio_Gestione_Albergo.Services.DAO;
 using Esercizio_Gestione_Albergo.Models;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace Esercizio_Gestione_Albergo.Controllers
 {
+
     public class ClienteController : Controller
     {
         private readonly IClienteDAO _clienteDAO;
@@ -152,6 +154,11 @@ namespace Esercizio_Gestione_Albergo.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        // GET: Cliente/Create
+        public IActionResult Create()
+        {
+            return View();
+        }
 
 
         // POST: Cliente/Create
