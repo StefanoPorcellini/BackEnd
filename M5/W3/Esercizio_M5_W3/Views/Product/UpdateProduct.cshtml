@@ -1,0 +1,45 @@
+﻿@model Esercizio_Pizzeria_In_Forno.Models.Product
+
+@{
+    ViewData["Title"] = "Modifica Pizza";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<form asp-action="UpdateProduct" method="post">
+    <input type="hidden" asp-for="Id" />
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="Name" class="control-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Photo" class="control-label"></label>
+        <input asp-for="Photo" class="form-control" />
+        <span asp-validation-for="Photo" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Price" class="control-label"></label>
+        <input asp-for="Price" class="form-control" />
+        <span asp-validation-for="Price" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="DeliveryTimeInMinutes" class="control-label"></label>
+        <input asp-for="DeliveryTimeInMinutes" class="form-control" />
+        <span asp-validation-for="DeliveryTimeInMinutes" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Save" class="btn btn-primary" />
+    </div>
+</form>
+
+<div>
+    <a asp-controller="Home" asp-action="Index" class="btn btn-secondary"><i class="bi bi-house"></i></a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,8 +1,30 @@
-﻿@{
+﻿@model IEnumerable<Esercizio_Pizzeria_In_Forno.Models.Product>
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <img id="logoGrande" src="~/img/logo/logo.webp" alt="logo"/>
+    <h2 class="mt-2" >LE NOSTRE PIZZE:</h2>
+    <div class="cards mt-5">
+        @foreach (var product in Model){
+        <div class="flip-card">
+            <div class="flip-card-inner">
+                <div class="flip-card-front">
+                    <imgsrc="@product.Photo" alt="@product.Name" />
+                    <h3>@product.Name</h3>
+                </div>
+                <div class="flip-card-back">
+                    <p class="title">Ingredienti:</p>
+                    <ul>
+                        @foreach (var i in product.Ingredients){
+                       <li>@i.Name</li>
+                            }
+                    </ul>
+                </div>
+            </div>
+        </div>
+        }
+    </div>
 </div>
