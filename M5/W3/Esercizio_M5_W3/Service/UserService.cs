@@ -3,7 +3,6 @@ using Esercizio_Pizzeria_In_Forno.Models;
 using Esercizio_Pizzeria_In_Forno.Service;
 using Microsoft.EntityFrameworkCore;
 
-
 namespace Esercizio_Pizzeria_In_Forno.Services
 {
     public class UserService : IUserService
@@ -17,6 +16,8 @@ namespace Esercizio_Pizzeria_In_Forno.Services
 
         public async Task<User> CreateUserAsync(User user)
         {
+            if (user == null) throw new ArgumentNullException(nameof(user));
+
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
             return user;
@@ -24,7 +25,9 @@ namespace Esercizio_Pizzeria_In_Forno.Services
 
         public async Task<User> GetUserByIdAsync(int userId)
         {
-            return await _context.Users.FindAsync(userId);
+            if (userId <= 0) throw new ArgumentException("Invalid user ID", nameof(userId));
+
+            return await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
         }
 
         public async Task<IEnumerable<User>> GetAllUsersAsync()
@@ -34,19 +37,29 @@ namespace Esercizio_Pizzeria_In_Forno.Services
 
         public async Task<User> UpdateUserAsync(User user)
         {
-            _context.Users.Update(user);
+            if (user == null) throw new ArgumentNullException(nameof(user));
+
+            var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Id == user.Id);
+            if (existingUser == null) throw new KeyNotFoundException("User not found");
+
+            existingUser.Name = user.Name;
+            existingUser.Email = user.Email;
+            existingUser.Password = user.Password;
+            existingUser.Roles = user.Roles;
+
             await _context.SaveChangesAsync();
-            return user;
+            return existingUser;
         }
 
         public async Task DeleteUserAsync(int userId)
         {
-            var user = await _context.Users.FindAsync(userId);
-            if (user != null)
-            {
-                _context.Users.Remove(user);
-                await _context.SaveChangesAsync();
-            }
+            if (userId <= 0) throw new ArgumentException("Invalid user ID", nameof(userId));
+
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            if (user == null) throw new KeyNotFoundException("User not found");
+
+            _context.Users.Remove(user);
+            await _context.SaveChangesAsync();
         }
     }
 }

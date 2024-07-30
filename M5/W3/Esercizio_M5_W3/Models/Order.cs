@@ -12,8 +12,8 @@ namespace Esercizio_Pizzeria_In_Forno.Models
         [StringLength(200)]
         public string Note { get; set; }
         public bool Processed { get; set; } = false;
-        public List<User> Users { get; set; } = [];
-        public List<ProductToOrder> Products { get; set; } = [];
+        public virtual List<User> Users { get; set; } = [];
+        public virtual List<ProductToOrder> Products { get; set; } = [];
 
     }
 }

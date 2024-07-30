@@ -8,6 +8,8 @@ namespace Esercizio_Pizzeria_In_Forno.Models
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         [Required, StringLength(50)]
-        public required string Name { get; set; }        
+        public required string Name { get; set; }
+        public virtual List<Product> Products { get; set; } = [];
+
     }
 }

@@ -15,7 +15,7 @@ namespace Esercizio_Pizzeria_In_Forno.Models
         public required decimal Price { get; set; }
         [Range(0, 60)]
         public int DeliveryTimeInMinutes { get; set; }
-        public List<Ingredient> Ingredients { get; set; } = [];
+        public virtual List<Ingredient> Ingredients { get; set; } = [];
 
     }
 }

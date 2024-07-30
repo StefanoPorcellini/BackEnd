@@ -14,5 +14,12 @@ namespace Esercizio_Pizzeria_In_Forno.Context
         public virtual DbSet<Order> Orders { get; set; }
         public virtual DbSet<ProductToOrder> ProductToOrders { get; set; }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Product>()
+                .Property(p => p.Price)
+                .HasColumnType("decimal(18,2)");
+        }
+
     }
 }

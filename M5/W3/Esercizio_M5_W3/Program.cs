@@ -1,5 +1,6 @@
 using Esercizio_Pizzeria_In_Forno.Context;
 using Esercizio_Pizzeria_In_Forno.Service;
+using Esercizio_Pizzeria_In_Forno.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,9 +9,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 var conn = builder.Configuration.GetConnectionString("SqlServer");
-builder.Services.AddDbContext<DataContext>(opt => opt.UseSqlServer(conn));
+builder.Services
+    .AddDbContext<DataContext>(opt =>
+        opt.UseSqlServer(conn).UseLazyLoadingProxies());
 
 builder.Services.AddScoped<IOrderService,  OrderService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 

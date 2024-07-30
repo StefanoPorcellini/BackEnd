@@ -20,7 +20,7 @@ namespace Esercizio_Pizzeria_In_Forno.Controllers
             if (ModelState.IsValid)
             {
                 var createOrder = await _orderService.CreateOrderAsync(order);
-                return RedirectToAction("OrderDetails", new { id = createOrder.Id })
+                return RedirectToAction("OrderDetails", new { id = createOrder.Id });
             }
             return View(order);
         }

@@ -1,0 +1,66 @@
+﻿@model IEnumerable<Esercizio_Pizzeria_In_Forno.Models.User>
+
+@{
+    ViewData["Title"] = "Utenti registrati";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<p>
+    <a asp-action="CreateUser" class="btn btn-success">Crea Nuovo Cliente</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+           
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+           
+            <td>
+                    <a asp-action="UserDetails" asp-route-id="@item.Id" class="btn btn-info"><i class="bi bi-zoom-in"></i></a>
+                    <a asp-action="UpdateUser" asp-route-id="@item.Id" class="btn btn-warning"><i class="bi bi-pencil-square"></i></a>
+                    <button class="btn btn-danger delete-user" data-id="@item.Id"><i class="bi bi-trash"></i></button>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+@section Scripts {
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.delete-user').on('click', function() {
+                var userId = $(this).data('id');
+                if (confirm('Sei sicuro di voler eliminare questo utente?')) {
+                    $.ajax({
+                        url: '@Url.Action("DeleteUser", "User")/' + userId,
+                        type: 'DELETE',
+                        success: function(result) {
+                            location.reload(); // Ricarica la pagina per aggiornare l'elenco degli utenti
+                        },
+                        error: function(xhr, status, error) {
+                            alert('Errore durante l\'eliminazione dell\'utente: ' + error);
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+}

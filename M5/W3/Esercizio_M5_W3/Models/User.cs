@@ -10,12 +10,10 @@ namespace Esercizio_Pizzeria_In_Forno.Models
         [Required]
         [StringLength(20)]
         public required string Name { get; set; }
-        [Required]
-        [EmailAddress]
+        [Required, EmailAddress]
         public required string Email { get; set; }
-        [Required]
-        [StringLength(20)]
+        [Required, StringLength(20)]
         public required string Password { get; set; }
-        public List<Role> Roles { get; set; } = [];
+        public virtual List<Role> Roles { get; set; } = [];
     }
 }
