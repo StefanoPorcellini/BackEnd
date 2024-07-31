@@ -13,6 +13,15 @@ namespace Esercizio_Pizzeria_In_Forno.Controllers
             _productService = productService;
         }
 
+        // Pagina Index con tutti i prodotti
+        [HttpGet]
+        public async Task<IActionResult> Index()
+        {
+            var products = await _productService.GetAllProductsAsync();
+            return View(products);
+        }
+
+
         // Crea un nuovo prodotto
         [HttpGet]
         public IActionResult CreateProduct()

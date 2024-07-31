@@ -1,12 +1,21 @@
 using Esercizio_Pizzeria_In_Forno.Context;
 using Esercizio_Pizzeria_In_Forno.Service;
 using Esercizio_Pizzeria_In_Forno.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services
+    .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(opt =>
+    {
+        opt.LoginPath = "/User/Login";
+    })
+    ;
 
 var conn = builder.Configuration.GetConnectionString("SqlServer");
 builder.Services
@@ -16,7 +25,9 @@ builder.Services
 builder.Services.AddScoped<IOrderService,  OrderService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IProductService, ProductService>();
-builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IIngredientService, IngredientService>();
+
+
 
 var app = builder.Build();
 
@@ -33,6 +44,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

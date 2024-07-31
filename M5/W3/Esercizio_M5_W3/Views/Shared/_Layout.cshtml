@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@using System.Security.Claims
+@{
+    var currentUser = (User.Identity?.IsAuthenticated ?? false) ? User.Identity.Name : "Anonimo";
+}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -23,13 +27,29 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Product" asp-action="Index">Le Nostre Pizze</a>
                         </li>
                     </ul>
                 </div>
+                <div class="me-3 d-flex gap-2">
+                    <a class="btn btn-info" href="@Url.Action("GetAllUsers", "User")">Utenti</a>
+                    <div>
+                    @if (currentUser == "Anonimo")
+                    {
+                        <div>
+                        <a class="btn btn-success" href="@Url.Action("Login", "User")">Login</a>
+                         oppure 
+                        <a class="btn btn-primary" href="@Url.Action("CreateUser", "User")">Registrati</a>
+                        </div>
+
+                    } else
+                    {
+                        <a class="btn btn-danger" href="@Url.Action("Logout", "User")">Logout</a>
+
+                    }
+                    </div>
+                </div>
             </div>
-            <a class="btn btn-info" href="@Url.Action("GetAllUsers", "User")">Utenti</a>
-            <a class="btn btn-primary me-3" href="@Url.Action("CreateUser", "User")">Registrati</a>
         </nav>
     </header>
     <div class="container">

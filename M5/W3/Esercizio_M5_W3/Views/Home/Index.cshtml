@@ -6,25 +6,28 @@
 
 <div class="text-center">
     <img id="logoGrande" src="~/img/logo/logo.webp" alt="logo"/>
-    <h2 class="mt-2" >LE NOSTRE PIZZE:</h2>
-    <div class="cards mt-5">
-        @foreach (var product in Model){
-        <div class="flip-card">
-            <div class="flip-card-inner">
-                <div class="flip-card-front">
-                    <imgsrc="@product.Photo" alt="@product.Name" />
-                    <h3>@product.Name</h3>
-                </div>
-                <div class="flip-card-back">
-                    <p class="title">Ingredienti:</p>
-                    <ul>
-                        @foreach (var i in product.Ingredients){
-                       <li>@i.Name</li>
-                            }
-                    </ul>
+    <h2 class="my-3" >LE NOSTRE PIZZE:</h2>
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col-md-4">
+                <div class="flip-card">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <img src="~/img/pizze/@item.Photo" alt="@item.Name" style="width:100%;height:200px;" />
+                            <p class="title">@item.Name</p>
+                            <p>@item.Price €</p>
+                            <p>@item.DeliveryTimeInMinutes minuti</p>
+                        </div>
+                        <div class="flip-card-back">
+                            <h4>@item.Name</h4>
+                            <p>@string.Join(", ", item.Ingredients.Select(i => i.Name))</p>
+                            <a asp-controller="Product" asp-action="ProductDetails" asp-route-id="@item.Id" class="btn btn-info"><i class="bi bi-zoom-in"></i></a>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
         }
     </div>
+
 </div>

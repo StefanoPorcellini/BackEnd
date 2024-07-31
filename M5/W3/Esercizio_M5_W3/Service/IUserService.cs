@@ -9,6 +9,7 @@ namespace Esercizio_Pizzeria_In_Forno.Service
         Task<IEnumerable<User>> GetAllUsersAsync();
         Task<User> UpdateUserAsync(User user);
         Task DeleteUserAsync(int userId);
+        Task<User> LoginAsync(string username,  string password);
 
     }
 }

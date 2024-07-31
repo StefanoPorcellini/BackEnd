@@ -1,36 +1,35 @@
-﻿@{
-    ViewData["Title"] = "ProductDetails";
-}
-
-<h1>Pizza @Model.Name</h1>
-
-@model Esercizio_Pizzeria_In_Forno.Models.Product
+﻿@model Esercizio_Pizzeria_In_Forno.Models.Product
 
 @{
     ViewData["Title"] = "Dettagli Prodotto";
 }
 
-<h1>@ViewData["Title"]</h1>
+<h1>Pizza @Model.Name</h1>
 
-<div class="row">
-    <div class="col-md-6">
-      
-        <div class="form-group">
-            <label asp-for="Photo" class="control-label">Foto</label>
-            <p><img src="@Model.Photo" alt="Foto prodotto" style="max-width: 200px;" /></p>
-        </div>
-        <div class="form-group">
-            <label asp-for="Price" class="control-label">Prezzo</label>
-            <p>@Model.Price.ToString("C")</p>
-        </div>
-        <div class="form-group">
-            <label asp-for="DeliveryTimeInMinutes" class="control-label">Tempo di Consegna</label>
-            <p>@Model.DeliveryTimeInMinutes minuti</p>
+<div class="d-flex justify-content-center">
+    <div class="card shadow">
+        <img src="~/img/pizze/@Model.Photo" alt="foto pizza @Model.Name" style: width="50%" class="align-self-center"/>
+        <div class="card-body">
+            <h5 class="card-title">Pizza @Model.Name</h5>
+            <p class="card-text">Ingredienti: 
+                @if (Model.Ingredients != null && Model.Ingredients.Any())
+                {
+                    <ul>
+                        @foreach (var i in Model.Ingredients)
+                        {
+                            <li>
+                                @i.Name
+                            </li>
+                        }
+                    </ul>
+                }
+            </p>
+            <p class="card-text">Prezzo: @Model.Price.ToString("C")</p>
+            <p class="card-text">Tempo di consegna: @Model.DeliveryTimeInMinutes minuti</p>
+            <div>
+                <a asp-action="UpdateProduct" asp-route-id="@Model.Id" class="btn btn-warning"><i class="bi bi-pencil-square"></i></a>
+                <a asp-controller="Home" asp-action="Index" class="btn btn-secondary"><i class="bi bi-house"></i></a>
+            </div>
         </div>
     </div>
-</div>
-
-<div>
-    <a asp-action="UpdateProduct" asp-route-id="@Model.Id" class="btn btn-warning"><i class="bi bi-pencil-square"></i</a>
-    <a asp-action="GetAllProducts" class="btn btn-secondary"><i class="bi bi-arrow-left"></i></a>
 </div>

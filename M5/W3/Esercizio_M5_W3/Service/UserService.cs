@@ -1,7 +1,10 @@
 ﻿using Esercizio_Pizzeria_In_Forno.Context;
 using Esercizio_Pizzeria_In_Forno.Models;
 using Esercizio_Pizzeria_In_Forno.Service;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace Esercizio_Pizzeria_In_Forno.Services
 {
@@ -60,6 +63,19 @@ namespace Esercizio_Pizzeria_In_Forno.Services
 
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<User> LoginAsync(string email, string password)
+        {
+            var user = await _context.Users
+                .Include(u => u.Roles)
+                .FirstOrDefaultAsync(u => u.Email == email && u.Password == password);
+
+            if (user == null)
+            {
+                return null;
+            }
+            return user;
         }
     }
 }
