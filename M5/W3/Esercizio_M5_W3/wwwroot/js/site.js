@@ -1,4 +1,20 @@
-﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
-
-// Write your JavaScript code.
+﻿$(document).ready(function () {
+    $(".add-to-cart").click(function () {
+        var productId = $(this).data("id");
+        $.ajax({
+            type: "POST",
+            url: addToOrderUrl,
+            data: { productId: productId },
+            success: function (response) {
+                if (response.success) {
+                    alert("Prodotto aggiunto al carrello!");
+                } else {
+                    alert("Errore durante l'aggiunta del prodotto al carrello: " + response.message);
+                }
+            },
+            error: function () {
+                alert("Errore durante l'aggiunta del prodotto al carrello.");
+            }
+        });
+    });
+});

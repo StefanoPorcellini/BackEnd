@@ -14,6 +14,8 @@ namespace Esercizio_Pizzeria_In_Forno.Models
         public required string Email { get; set; }
         [Required, StringLength(20)]
         public required string Password { get; set; }
+        public int? OrderId { get; set; }
+        public virtual Order Order { get; set; }
         public virtual List<Role> Roles { get; set; } = [];
     }
 }

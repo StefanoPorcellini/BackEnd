@@ -1,26 +1,35 @@
 ﻿using Esercizio_Pizzeria_In_Forno.Models;
 using Esercizio_Pizzeria_In_Forno.Service;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace Esercizio_Pizzeria_In_Forno.Controllers
 {
     public class OrderController : Controller
     {
         private readonly IOrderService _orderService;
+        private readonly IProductService _productService;
+        private readonly IUserService _userService;
 
-        public OrderController(IOrderService orderService)
+        public OrderController(IOrderService orderService, IProductService productService, IUserService userService)
         {
             _orderService = orderService;
+            _productService = productService;
+            _userService = userService;
         }
 
         //crea nuovo ordine
         [HttpPost]
-        public async Task<IActionResult> CreateOrder(Order order)
+        public async Task<IActionResult> CreateOrder(Order order, List<ProductToOrder> products)
         {
             if (ModelState.IsValid)
             {
-                var createOrder = await _orderService.CreateOrderAsync(order);
-                return RedirectToAction("OrderDetails", new { id = createOrder.Id });
+                var userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "UserID")?.Value ?? "0");
+                var createdOrder = await _orderService.CreateOrderAsync(order, products, userId);
+                return RedirectToAction("OrderDetails", new { id = createdOrder.Id });
             }
             return View(order);
         }
@@ -31,7 +40,7 @@ namespace Esercizio_Pizzeria_In_Forno.Controllers
         {
             var order = await _orderService.GetOrderByIdAsync(id);
             if (order == null)
-            { 
+            {
                 return NotFound();
             }
             return View(order);
@@ -41,7 +50,7 @@ namespace Esercizio_Pizzeria_In_Forno.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllOrders()
         {
-            var orders = await _orderService.GettAllOrderAsync();
+            var orders = await _orderService.GetAllOrdersAsync();
             return View(orders);
         }
 
@@ -49,7 +58,7 @@ namespace Esercizio_Pizzeria_In_Forno.Controllers
         [HttpGet]
         public async Task<IActionResult> GetOrdersByUser(int userId)
         {
-            var orders = await _orderService.GetOrderByUserIdAsync(userId);
+            var orders = await _orderService.GetOrdersByUserIdAsync(userId);
             return View(orders);
         }
 
@@ -73,5 +82,27 @@ namespace Esercizio_Pizzeria_In_Forno.Controllers
             return RedirectToAction("GetAllOrders");
         }
 
+        // Aggiungi un prodotto all'ordine
+        [HttpPost]
+        public async Task<IActionResult> AddToOrder(int productId)
+        {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return Json(new { success = false, message = "Esegui il login o registrati prima di acquistare." });
+            }
+
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            try
+            {
+                await _orderService.AddToOrderAsync(userId, productId);
+                return Json(new { success = true });
+            }
+            catch (ArgumentException ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
     }
 }
+

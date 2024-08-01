@@ -1,10 +1,10 @@
 ﻿using Esercizio_Pizzeria_In_Forno.Context;
 using Esercizio_Pizzeria_In_Forno.Models;
 using Esercizio_Pizzeria_In_Forno.Service;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Esercizio_Pizzeria_In_Forno.Services
 {
@@ -30,19 +30,19 @@ namespace Esercizio_Pizzeria_In_Forno.Services
         {
             if (userId <= 0) throw new ArgumentException("Invalid user ID", nameof(userId));
 
-            return await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            return await _context.Users.Include(u => u.Roles).FirstOrDefaultAsync(u => u.Id == userId);
         }
 
         public async Task<IEnumerable<User>> GetAllUsersAsync()
         {
-            return await _context.Users.ToListAsync();
+            return await _context.Users.Include(u => u.Roles).ToListAsync();
         }
 
         public async Task<User> UpdateUserAsync(User user)
         {
             if (user == null) throw new ArgumentNullException(nameof(user));
 
-            var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Id == user.Id);
+            var existingUser = await _context.Users.Include(u => u.Roles).FirstOrDefaultAsync(u => u.Id == user.Id);
             if (existingUser == null) throw new KeyNotFoundException("User not found");
 
             existingUser.Name = user.Name;
@@ -71,10 +71,6 @@ namespace Esercizio_Pizzeria_In_Forno.Services
                 .Include(u => u.Roles)
                 .FirstOrDefaultAsync(u => u.Email == email && u.Password == password);
 
-            if (user == null)
-            {
-                return null;
-            }
             return user;
         }
     }

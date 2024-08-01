@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Esercizio_Pizzeria_In_Forno.Models
@@ -11,7 +12,7 @@ namespace Esercizio_Pizzeria_In_Forno.Models
         public required string Name { get; set; }
         [Required, StringLength(128)]
         public required string Photo { get; set; }
-        [Required, Column(TypeName = "decimal(18,2)")]
+        [Required, Precision(18, 2)]
         public required decimal Price { get; set; }
         [Range(0, 60)]
         public int DeliveryTimeInMinutes { get; set; }

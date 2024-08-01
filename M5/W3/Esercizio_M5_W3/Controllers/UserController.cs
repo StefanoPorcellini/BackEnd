@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Esercizio_Pizzeria_In_Forno.Models;
+using Microsoft.AspNetCore.Authorization;
 
 public class UserController : Controller
 {
@@ -14,13 +15,21 @@ public class UserController : Controller
         _userService = userService;
     }
 
+    [Authorize(Roles = "Admin")]
+    public IActionResult Index()
+    {
+        return RedirectToAction("AeraRiservata/Index");
+    }
+
     // Crea un nuovo cliente
+    [Authorize(Roles = "Admin")]
     [HttpGet]
     public IActionResult CreateUser()
     {
         return View();
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> CreateUser(User user)
     {
@@ -33,6 +42,7 @@ public class UserController : Controller
     }
 
     // Dettagli di un cliente specifico
+    [Authorize(Roles = "Admin")]
     [HttpGet]
     public async Task<IActionResult> UserDetails(int id)
     {
@@ -45,6 +55,7 @@ public class UserController : Controller
     }
 
     // Ottieni tutti i clienti
+    [Authorize(Roles = "Admin")]
     [HttpGet]
     public async Task<IActionResult> GetAllUsers()
     {
@@ -53,6 +64,7 @@ public class UserController : Controller
     }
 
     // Mostra il form di modifica per un cliente
+    [Authorize(Roles = "Admin")]
     [HttpGet]
     public async Task<IActionResult> UpdateUser(int id)
     {
@@ -64,6 +76,7 @@ public class UserController : Controller
         return View(user);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> UpdateUser(int id, User updatedUserDetails)
     {
@@ -88,6 +101,7 @@ public class UserController : Controller
     }
 
     // Elimina un cliente
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> DeleteUser(int id)
     {
@@ -96,14 +110,18 @@ public class UserController : Controller
     }
 
     // Login
-
+    [AllowAnonymous]
     [HttpGet]
-        public IActionResult Login()
+    public IActionResult Login()
     {
         return View();
     }
 
+    //Login
+
+    [AllowAnonymous]
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Login(string email, string password)
     {
         try
@@ -115,13 +133,15 @@ public class UserController : Controller
                 return View();
             }
 
+            // Crea i claim per l'utente
             var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.Name),
-                new Claim(ClaimTypes.Email, user.Email)
-            };
+        {
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new Claim(ClaimTypes.Name, user.Name),
+            new Claim(ClaimTypes.Email, user.Email)
+        };
 
+            // Aggiungi i ruoli come claim
             claims.AddRange(user.Roles.Select(role => new Claim(ClaimTypes.Role, role.Name)));
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -138,14 +158,17 @@ public class UserController : Controller
         {
             ModelState.AddModelError(string.Empty, "Errore durante il processo di Login.");
             return View();
-        }        
+        }
     }
 
-    //logout
 
+    // Logout
+    [Authorize]
+    [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Logout()
     {
-        await HttpContext.SignOutAsync();
+        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         return RedirectToAction("Index", "Home");
     }
 }

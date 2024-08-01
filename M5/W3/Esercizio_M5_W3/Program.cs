@@ -3,6 +3,7 @@ using Esercizio_Pizzeria_In_Forno.Service;
 using Esercizio_Pizzeria_In_Forno.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,8 @@ builder.Services
     .AddCookie(opt =>
     {
         opt.LoginPath = "/User/Login";
+        opt.LogoutPath = "/User/Logout";
+        opt.AccessDeniedPath = "/Home/AccessDenied";
     })
     ;
 
