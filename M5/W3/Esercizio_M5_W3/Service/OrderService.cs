@@ -129,29 +129,40 @@ namespace Esercizio_Pizzeria_In_Forno.Service
         {
             try
             {
+                // Verifica se l'utente esiste
                 var user = await _context.Users.FindAsync(userId);
                 if (user == null)
                 {
                     throw new KeyNotFoundException("Utente non trovato");
                 }
 
+                // Trova o crea un ordine per l'utente
                 var order = await _context.Orders.FirstOrDefaultAsync(o => o.Id == user.OrderId && !o.Processed);
                 if (order == null)
                 {
-                    throw new InvalidOperationException("Ordine non trovato o già processato");
+                    // Crea un nuovo ordine se non esiste
+                    order = new Order { Processed = false, Address = "N/A", Note = "N/A" };
+                    _context.Orders.Add(order);
+                    await _context.SaveChangesAsync();
+
+                    user.OrderId = order.Id;
+                    _context.Users.Update(user);
+                    await _context.SaveChangesAsync();
                 }
 
+                // Verifica se il prodotto esiste
                 var product = await _context.Products.FindAsync(productId);
                 if (product == null)
                 {
                     throw new KeyNotFoundException("Prodotto non trovato");
                 }
 
+                // Aggiungi il prodotto all'ordine
                 var productToOrder = new ProductToOrder
                 {
                     IdProduct = productId,
                     IdOrder = order.Id,
-                    Quantity = 1 // impostiamo una quantità predefinita
+                    Quantity = 1
                 };
 
                 _context.ProductToOrders.Add(productToOrder);
@@ -160,7 +171,7 @@ namespace Esercizio_Pizzeria_In_Forno.Service
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Errore durante l'aggiunta del prodotto all'ordine.");
-                throw;
+                throw;  // Rilancia l'eccezione per farla gestire a livello di controller
             }
         }
 

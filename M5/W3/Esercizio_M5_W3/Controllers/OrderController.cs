@@ -57,20 +57,18 @@ namespace Esercizio_Pizzeria_In_Forno.Controllers
 
             var orders = await _orderService.GetOrdersByUserIdAsync(userId);
 
-            if (orders == null || !orders.Any())
-            {
-                ViewBag.Message = "Non hai ancora ordinato niente, torna alla home per ordinare.";
-                return View("EmptyOrder");
-            }
-
+            // Trova l'ordine corrente non elaborato
             var currentOrder = orders.FirstOrDefault(o => !o.Processed);
 
             if (currentOrder == null)
             {
+                // Se non ci sono ordini, puoi visualizzare una vista differente
+                // o reindirizzare a un'altra azione
                 ViewBag.Message = "Non hai ancora ordinato niente, torna alla home per ordinare.";
                 return View("EmptyOrder");
             }
 
+            // Ottieni i dettagli dell'ordine corrente
             var orderDetails = await _orderService.GetOrderDetailsAsync(currentOrder.Id);
 
             return View(orderDetails);
@@ -132,6 +130,7 @@ namespace Esercizio_Pizzeria_In_Forno.Controllers
 
         // Aggiungi prodotto all'ordine
         [HttpPost]
+        [HttpPost]
         public async Task<IActionResult> AddToOrder(int productId)
         {
             if (!User.Identity.IsAuthenticated)
@@ -147,9 +146,13 @@ namespace Esercizio_Pizzeria_In_Forno.Controllers
             }
             catch (ArgumentException ex)
             {
-                // Log error
                 _logger.LogError(ex, "Errore durante l'aggiunta del prodotto all'ordine.");
                 return Json(new { success = false, message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Errore imprevisto durante l'aggiunta del prodotto all'ordine.");
+                return Json(new { success = false, message = "Errore imprevisto. Per favore, riprova più tardi." });
             }
         }
 

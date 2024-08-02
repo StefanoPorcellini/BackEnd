@@ -44,29 +44,52 @@
 
 @section Scripts {
 
-<script>
-    $(document).ready(function () {
-        var addToOrderUrl = '@Url.Action("AddToOrder", "Order")';
+<!-- Aggiungi SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-        $(".add-to-cart").click(function () {
-            var productId = $(this).data("id");
-            console.log("Adding to cart, Product ID: " + productId);
-            $.ajax({
-                type: "POST",
-                url: addToOrderUrl,
-                data: { productId: productId },
-                success: function (response) {
-                    if (response.success) {
-                        alert("Prodotto aggiunto al carrello!");
-                    } else {
-                        alert("Errore durante l'aggiunta del prodotto al carrello: " + response.message);
+    <script>
+        $(document).ready(function () {
+            var addToOrderUrl = '@Url.Action("AddToOrder", "Order")';
+
+            $(".add-to-cart").click(function () {
+                var productId = $(this).data("id");
+                console.log("Adding to cart, Product ID: " + productId);
+
+                $.ajax({
+                    type: "POST",
+                    url: addToOrderUrl,
+                    data: { productId: productId },
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: 'Prodotto aggiunto al carrello!',
+                                timer: 2000,
+                                showConfirmButton: false
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Errore',
+                                text: 'Errore durante l\'aggiunta del prodotto al carrello: ' + response.message
+                            });
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        console.error('Error details:', {
+                            status: jqXHR.status,
+                            textStatus: textStatus,
+                            errorThrown: errorThrown
+                        });
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Errore',
+                            text: 'Errore durante l\'aggiunta del prodotto al carrello. Per favore, riprova più tardi.'
+                        });
                     }
-                },
-                error: function () {
-                    alert("Errore durante l'aggiunta del prodotto al carrello.");
-                }
+                });
             });
         });
-    });
-</script>
+    </script>
 }
