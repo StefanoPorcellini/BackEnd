@@ -3,11 +3,13 @@ using Esercizio_Pizzeria_In_Forno.Service;
 using Esercizio_Pizzeria_In_Forno.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Aggiungi i servizi al contenitore
 builder.Services.AddControllersWithViews();
 
 builder.Services
@@ -17,28 +19,31 @@ builder.Services
         opt.LoginPath = "/User/Login";
         opt.LogoutPath = "/User/Logout";
         opt.AccessDeniedPath = "/Home/AccessDenied";
-    })
-    ;
+    });
 
+// Configura il contesto del database
 var conn = builder.Configuration.GetConnectionString("SqlServer");
 builder.Services
     .AddDbContext<DataContext>(opt =>
         opt.UseSqlServer(conn).UseLazyLoadingProxies());
 
-builder.Services.AddScoped<IOrderService,  OrderService>();
+// Aggiungi i servizi
+builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IIngredientService, IngredientService>();
 
-
+// Configura il logging
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+builder.Logging.AddDebug();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Configura la pipeline delle richieste HTTP
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 

@@ -19,6 +19,7 @@ else
                 <th>Quantità</th>
                 <th>Prezzo Unitario</th>
                 <th>Totale</th>
+                <th>Azione</th>
             </tr>
         </thead>
         <tbody>
@@ -26,12 +27,75 @@ else
             {
                 <tr>
                     <td>@product.Name</td>
-                    <td>@product.Quantity</td>
+                    <td>
+                        <input type="number" id="quantity-@product.ProductId" value="@product.Quantity" min="1" class="form-control quantity-input" />
+                    </td>
                     <td>@product.Price.ToString("C")</td>
                     <td>@product.Total.ToString("C")</td>
+                    <td>
+                        <button type="button" class="btn btn-primary update-product" data-id="@product.ProductId">Aggiorna</button>
+                        <button type="button" class="btn btn-danger delete-product" data-id="@product.ProductId">Elimina</button>
+                    </td>
                 </tr>
             }
         </tbody>
     </table>
-    <h3>Totale Speso: @Model.TotalPrice.ToString("C")</h3>
+    <h3>Totale: @Model.TotalPrice.ToString("C")</h3>
+}
+
+@section Scripts
+{
+    <script>
+        $(document).ready(function () {
+            var updateProductQuantityUrl = '@Url.Action("UpdateProductQuantity", "Order")';
+            var deleteProductUrl = '@Url.Action("DeleteProduct", "Order")';
+
+
+            $(".update-product").click(function () {
+                var productId = $(this).data("id");
+                var quantity = $("#quantity-" + productId).val();
+                console.log("Updating product, Product ID: " + productId + ", Quantity: " + quantity);
+
+                $.ajax({
+                    type: "POST",
+                    url: updateProductQuantityUrl,
+                    data: { productId: productId, quantity: quantity },
+                    success: function (response) {
+                        if (response.success) {
+                            alert("Quantità aggiornata!");
+                            location.reload();
+                        } else {
+                            alert("Errore: " + response.message);
+                        }
+                    },
+                    error: function () {
+                        alert("Errore durante l'aggiornamento della quantità.");
+                    }
+                });
+            });
+
+            $(".delete-product").click(function () {
+                var productId = $(this).data("id");
+                console.log("Deleting product, Product ID: " + productId);
+
+                $.ajax({
+                    type: "POST",
+                    url: deleteProductUrl,
+                    data: { productId: productId },
+                    success: function (response) {
+                        if (response.success) {
+                            alert("Prodotto eliminato!");
+                            location.reload();
+                        } else {
+                            alert("Errore: " + response.message);
+                        }
+                    },
+                    error: function () {
+                        alert("Errore durante l'eliminazione del prodotto.");
+                    }
+                });
+            });
+        });
+
+    </script>
 }

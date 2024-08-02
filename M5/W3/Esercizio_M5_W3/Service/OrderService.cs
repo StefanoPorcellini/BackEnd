@@ -11,36 +11,46 @@ namespace Esercizio_Pizzeria_In_Forno.Service
     public class OrderService : IOrderService
     {
         private readonly DataContext _context;
+        private readonly ILogger<OrderService> _logger;
 
-        public OrderService(DataContext context)
+
+        public OrderService(DataContext context, ILogger<OrderService> logger)
         {
             _context = context;
+            _logger = logger;
         }
-
         public async Task<Order> CreateOrderAsync(Order order, List<ProductToOrder> products, int userId)
         {
             if (order == null) throw new ArgumentNullException(nameof(order));
 
-            _context.Orders.Add(order);
-            await _context.SaveChangesAsync();
-
-            foreach (var product in products)
+            try
             {
-                product.IdOrder = order.Id;
-                _context.ProductToOrders.Add(product);
-            }
+                _context.Orders.Add(order);
+                await _context.SaveChangesAsync();
 
-            // Associa l'ordine all'utente
-            var user = await _context.Users.FindAsync(userId);
-            if (user != null)
+                foreach (var product in products)
+                {
+                    product.IdOrder = order.Id;
+                    _context.ProductToOrders.Add(product);
+                }
+
+                var user = await _context.Users.FindAsync(userId);
+                if (user != null)
+                {
+                    user.OrderId = order.Id;
+                    _context.Users.Update(user);
+                }
+
+                await _context.SaveChangesAsync();
+                return order;
+            }
+            catch (Exception ex)
             {
-                user.OrderId = order.Id;
-                _context.Users.Update(user);
+                _logger.LogError(ex, "Errore durante la creazione dell'ordine.");
+                throw;
             }
-
-            await _context.SaveChangesAsync();
-            return order;
         }
+
 
         public async Task<Order> GetOrderByIdAsync(int orderId)
         {
@@ -68,93 +78,92 @@ namespace Esercizio_Pizzeria_In_Forno.Service
                 .ThenInclude(p => p.Product)
                 .ToListAsync();
         }
-
         public async Task<Order> UpdateOrderAsync(Order order)
         {
             if (order == null) throw new ArgumentNullException(nameof(order));
 
-            var existingOrder = await _context.Orders.Include(o => o.Products).FirstOrDefaultAsync(o => o.Id == order.Id);
-            if (existingOrder == null) throw new KeyNotFoundException("Order not found");
+            try
+            {
+                var existingOrder = await _context.Orders.Include(o => o.Products).FirstOrDefaultAsync(o => o.Id == order.Id);
+                if (existingOrder == null) throw new KeyNotFoundException("Order not found");
 
-            existingOrder.Address = order.Address;
-            existingOrder.Note = order.Note;
-            existingOrder.Processed = order.Processed;
+                existingOrder.Address = order.Address;
+                existingOrder.Note = order.Note;
+                existingOrder.Processed = order.Processed;
 
-            await _context.SaveChangesAsync();
-            return existingOrder;
+                await _context.SaveChangesAsync();
+                return existingOrder;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Errore durante l'aggiornamento dell'ordine.");
+                throw;
+            }
         }
-
         public async Task DeleteOrderAsync(int orderId)
         {
             if (orderId <= 0) throw new ArgumentException("Invalid order ID", nameof(orderId));
 
-            var order = await _context.Orders.FirstOrDefaultAsync(o => o.Id == orderId);
-            if (order == null) throw new KeyNotFoundException("Order not found");
-
-            // Rimuovi l'associazione tra l'ordine e l'utente
-            var usersWithOrder = await _context.Users.Where(u => u.OrderId == orderId).ToListAsync();
-            foreach (var user in usersWithOrder)
+            try
             {
-                user.OrderId = null;
-            }
+                var order = await _context.Orders.FirstOrDefaultAsync(o => o.Id == orderId);
+                if (order == null) throw new KeyNotFoundException("Order not found");
 
-            _context.Orders.Remove(order);
-            await _context.SaveChangesAsync();
+                var usersWithOrder = await _context.Users.Where(u => u.OrderId == orderId).ToListAsync();
+                foreach (var user in usersWithOrder)
+                {
+                    user.OrderId = null;
+                }
+
+                _context.Orders.Remove(order);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Errore durante l'eliminazione dell'ordine.");
+                throw;
+            }
         }
 
         public async Task AddToOrderAsync(int userId, int productId)
         {
-            // Trova l'utente
-            var user = await _context.Users.FindAsync(userId);
-            if (user == null)
-                throw new ArgumentException("Invalid user ID");
-
-            // Trova l'ordine esistente dell'utente o crea un nuovo ordine
-            var order = await _context.Orders
-                .Include(o => o.Products)
-                .FirstOrDefaultAsync(o => o.Users.Any(u => u.Id == userId) && !o.Processed);
-
-            if (order == null)
+            try
             {
-                order = new Order
+                var user = await _context.Users.FindAsync(userId);
+                if (user == null)
                 {
-                    Address = "Default Address",
-                    Note = "Default Note",
-                    Users = new List<User> { user }
-                };
-                _context.Orders.Add(order);
-                await _context.SaveChangesAsync(); // Salva l'ordine per ottenere l'ID
-            }
+                    throw new KeyNotFoundException("Utente non trovato");
+                }
 
-            // Trova il prodotto
-            var product = await _context.Products.FindAsync(productId);
-            if (product == null)
-                throw new ArgumentException("Invalid product ID");
+                var order = await _context.Orders.FirstOrDefaultAsync(o => o.Id == user.OrderId && !o.Processed);
+                if (order == null)
+                {
+                    throw new InvalidOperationException("Ordine non trovato o già processato");
+                }
 
-            // Verifica se il prodotto è già stato aggiunto all'ordine
-            var existingProductToOrder = await _context.ProductToOrders
-                .FirstOrDefaultAsync(p => p.IdOrder == order.Id && p.IdProduct == productId);
+                var product = await _context.Products.FindAsync(productId);
+                if (product == null)
+                {
+                    throw new KeyNotFoundException("Prodotto non trovato");
+                }
 
-            if (existingProductToOrder != null)
-            {
-                // Aggiorna la quantità se il prodotto è già presente
-                existingProductToOrder.Quantity += 1;
-                _context.ProductToOrders.Update(existingProductToOrder);
-            }
-            else
-            {
-                // Aggiungi un nuovo record se il prodotto non è presente
                 var productToOrder = new ProductToOrder
                 {
+                    IdProduct = productId,
                     IdOrder = order.Id,
-                    IdProduct = product.Id,
-                    Quantity = 1
+                    Quantity = 1 // impostiamo una quantità predefinita
                 };
-                _context.ProductToOrders.Add(productToOrder);
-            }
 
-            await _context.SaveChangesAsync();
+                _context.ProductToOrders.Add(productToOrder);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Errore durante l'aggiunta del prodotto all'ordine.");
+                throw;
+            }
         }
+
 
         public async Task<OrderDetailsViewModel> GetOrderDetailsAsync(int orderId)
         {
@@ -185,6 +194,58 @@ namespace Esercizio_Pizzeria_In_Forno.Service
 
             return orderDetails;
         }
+        public async Task UpdateProductQuantityAsync(int orderId, int productId, int quantity)
+        {
+            if (quantity <= 0)
+            {
+                throw new ArgumentException("La quantità deve essere maggiore di zero.");
+            }
 
+            try
+            {
+                var productToOrder = await _context.ProductToOrders
+                    .FirstOrDefaultAsync(p => p.IdProduct == productId && p.IdOrder == orderId);
+
+                if (productToOrder != null)
+                {
+                    productToOrder.Quantity = quantity;
+                    _context.ProductToOrders.Update(productToOrder);
+                    await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    throw new KeyNotFoundException("Prodotto non trovato nell'ordine");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Errore durante l'aggiornamento della quantità del prodotto.");
+                throw;
+            }
+        }
+
+        public async Task DeleteProductFromOrderAsync(int orderId, int productId)
+        {
+            try
+            {
+                var productToOrder = await _context.ProductToOrders
+                    .FirstOrDefaultAsync(p => p.IdProduct == productId && p.IdOrder == orderId);
+
+                if (productToOrder != null)
+                {
+                    _context.ProductToOrders.Remove(productToOrder);
+                    await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    throw new KeyNotFoundException("Prodotto non trovato nell'ordine");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Errore durante l'eliminazione del prodotto dall'ordine.");
+                throw;
+            }
+        }
     }
 }

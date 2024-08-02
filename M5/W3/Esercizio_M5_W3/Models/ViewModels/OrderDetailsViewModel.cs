@@ -1,4 +1,6 @@
-﻿namespace Esercizio_Pizzeria_In_Forno.Models.ViewModels
+﻿using static System.Collections.Specialized.BitVector32;
+
+namespace Esercizio_Pizzeria_In_Forno.Models.ViewModels
 {
     public class OrderDetailsViewModel
     {

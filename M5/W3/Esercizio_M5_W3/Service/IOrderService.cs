@@ -13,5 +13,8 @@ namespace Esercizio_Pizzeria_In_Forno.Service
         Task DeleteOrderAsync(int orderId);
         Task AddToOrderAsync(int userId, int productId);
         Task<OrderDetailsViewModel> GetOrderDetailsAsync(int orderId);
+        Task UpdateProductQuantityAsync(int orderId, int productId, int quantity);
+        Task DeleteProductFromOrderAsync(int orderId, int productId);
+
     }
 }

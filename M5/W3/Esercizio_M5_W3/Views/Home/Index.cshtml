@@ -26,7 +26,7 @@
                             <h5>Ingredienti:</h5>
                             <p class="w-75">@string.Join(", ", item.Ingredients.Select(i => i.Name))</p>
                             <div class="d-flex align-items-center">
-                                <input type="number" class="form-control me-2 quantity-input" data-id="@item.Id" min="0" value="0" style="width: 80px;" />
+                                <input type="number" class="form-control me-2 quantity-input" data-id="@item.Id" min="1" value="1" style="width: 80px;" />
                                 <button class="btn btn-warning text-white add-to-cart" data-id="@item.Id">
                                     <i class="bi bi-cart-plus"></i>
                                 </button>
@@ -42,34 +42,31 @@
     </div>
 </div>
 
+@section Scripts {
+
 <script>
-    var addToOrderUrl = '@Url.Action("AddToOrder", "Order")';
+    $(document).ready(function () {
+        var addToOrderUrl = '@Url.Action("AddToOrder", "Order")';
 
-    document.querySelectorAll('.add-to-cart').forEach(button => {
-        button.addEventListener('click', function () {
-            var productId = this.getAttribute('data-id');
-            var quantity = this.previousElementSibling.value; // Get quantity from the input field
-
-            if (quantity > 0) {
-                // Assuming `AddToOrder` accepts `productId` and `quantity`
-                fetch(addToOrderUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ productId: productId, quantity: quantity })
-                }).then(response => {
-                    if (response.ok) {
-                        alert('Product added to cart!');
+        $(".add-to-cart").click(function () {
+            var productId = $(this).data("id");
+            console.log("Adding to cart, Product ID: " + productId);
+            $.ajax({
+                type: "POST",
+                url: addToOrderUrl,
+                data: { productId: productId },
+                success: function (response) {
+                    if (response.success) {
+                        alert("Prodotto aggiunto al carrello!");
                     } else {
-                        alert('Failed to add product to cart.');
+                        alert("Errore durante l'aggiunta del prodotto al carrello: " + response.message);
                     }
-                }).catch(error => {
-                    console.error('Error:', error);
-                });
-            } else {
-                alert('Quantity must be greater than zero.');
-            }
+                },
+                error: function () {
+                    alert("Errore durante l'aggiunta del prodotto al carrello.");
+                }
+            });
         });
     });
 </script>
+}
