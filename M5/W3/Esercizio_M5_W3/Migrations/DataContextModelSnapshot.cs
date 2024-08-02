@@ -113,9 +113,6 @@ namespace Esercizio_Pizzeria_In_Forno.Migrations
                     b.Property<int>("IdProduct")
                         .HasColumnType("int");
 
-                    b.Property<int?>("OrderId")
-                        .HasColumnType("int");
-
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
@@ -124,8 +121,6 @@ namespace Esercizio_Pizzeria_In_Forno.Migrations
                     b.HasIndex("IdOrder");
 
                     b.HasIndex("IdProduct");
-
-                    b.HasIndex("OrderId");
 
                     b.ToTable("ProductToOrders");
                 });
@@ -146,6 +141,18 @@ namespace Esercizio_Pizzeria_In_Forno.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Roles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Admin"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "User"
+                        });
                 });
 
             modelBuilder.Entity("Esercizio_Pizzeria_In_Forno.Models.User", b =>
@@ -173,9 +180,14 @@ namespace Esercizio_Pizzeria_In_Forno.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
+                    b.Property<int?>("RoleId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("OrderId");
+
+                    b.HasIndex("RoleId");
 
                     b.ToTable("Users");
                 });
@@ -197,23 +209,25 @@ namespace Esercizio_Pizzeria_In_Forno.Migrations
 
             modelBuilder.Entity("UserRole", b =>
                 {
-                    b.Property<int>("RoleId")
-                        .HasColumnType("int");
-
                     b.Property<int>("UserId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnOrder(0);
 
-                    b.HasKey("RoleId", "UserId");
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int")
+                        .HasColumnOrder(1);
 
-                    b.HasIndex("UserId");
+                    b.HasKey("UserId", "RoleId");
 
-                    b.ToTable("UserRole");
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("UserRoles");
                 });
 
             modelBuilder.Entity("Esercizio_Pizzeria_In_Forno.Models.ProductToOrder", b =>
                 {
                     b.HasOne("Esercizio_Pizzeria_In_Forno.Models.Order", "Order")
-                        .WithMany()
+                        .WithMany("Products")
                         .HasForeignKey("IdOrder")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -223,10 +237,6 @@ namespace Esercizio_Pizzeria_In_Forno.Migrations
                         .HasForeignKey("IdProduct")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("Esercizio_Pizzeria_In_Forno.Models.Order", null)
-                        .WithMany("Products")
-                        .HasForeignKey("OrderId");
 
                     b.Navigation("Order");
 
@@ -239,6 +249,10 @@ namespace Esercizio_Pizzeria_In_Forno.Migrations
                         .WithMany("Users")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("Esercizio_Pizzeria_In_Forno.Models.Role", null)
+                        .WithMany("Users")
+                        .HasForeignKey("RoleId");
 
                     b.Navigation("Order");
                 });
@@ -260,17 +274,21 @@ namespace Esercizio_Pizzeria_In_Forno.Migrations
 
             modelBuilder.Entity("UserRole", b =>
                 {
-                    b.HasOne("Esercizio_Pizzeria_In_Forno.Models.Role", null)
-                        .WithMany()
+                    b.HasOne("Esercizio_Pizzeria_In_Forno.Models.Role", "Role")
+                        .WithMany("UserRoles")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Esercizio_Pizzeria_In_Forno.Models.User", null)
-                        .WithMany()
+                    b.HasOne("Esercizio_Pizzeria_In_Forno.Models.User", "User")
+                        .WithMany("UserRoles")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Role");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Esercizio_Pizzeria_In_Forno.Models.Order", b =>
@@ -278,6 +296,18 @@ namespace Esercizio_Pizzeria_In_Forno.Migrations
                     b.Navigation("Products");
 
                     b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("Esercizio_Pizzeria_In_Forno.Models.Role", b =>
+                {
+                    b.Navigation("UserRoles");
+
+                    b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("Esercizio_Pizzeria_In_Forno.Models.User", b =>
+                {
+                    b.Navigation("UserRoles");
                 });
 #pragma warning restore 612, 618
         }

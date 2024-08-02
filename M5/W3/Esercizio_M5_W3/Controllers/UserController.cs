@@ -3,45 +3,72 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using Esercizio_Pizzeria_In_Forno.Models;
 using Microsoft.AspNetCore.Authorization;
+using System.Threading.Tasks;
+using System.Linq;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
+using Esercizio_Pizzeria_In_Forno.Context;
+using Esercizio_Pizzeria_In_Forno.Models.ViewModels;
 
 public class UserController : Controller
 {
+    private readonly DataContext _context;
     private readonly IUserService _userService;
 
-    public UserController(IUserService userService)
+    public UserController(DataContext context, IUserService userService)
     {
         _userService = userService;
+        _context = context;
     }
 
-    [Authorize(Roles = "Admin")]
-    public IActionResult Index()
-    {
-        return RedirectToAction("AeraRiservata/Index");
-    }
-
-    // Crea un nuovo cliente
     [Authorize(Roles = "Admin")]
     [HttpGet]
-    public IActionResult CreateUser()
+    public IActionResult AreaRiservata()
     {
         return View();
     }
 
-    [Authorize(Roles = "Admin")]
+    [AllowAnonymous]
+    [HttpGet]
+    public async Task<IActionResult> CreateUser()
+    {
+        var roles = await _context.Roles.ToListAsync();
+        var viewModel = new UserViewModel
+        {
+            Roles = roles
+        };
+        return View(viewModel);
+    }
+
+    [AllowAnonymous]
     [HttpPost]
-    public async Task<IActionResult> CreateUser(User user)
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> CreateUser(UserViewModel viewModel)
     {
         if (ModelState.IsValid)
         {
-            var createdUser = await _userService.CreateUserAsync(user);
-            return RedirectToAction("UserDetails", new { id = createdUser.Id });
+            var user = viewModel.User;
+            user.UserRoles = new List<UserRole>();
+
+            if (User.IsInRole("Admin"))
+            {
+                user.UserRoles.Add(new UserRole { RoleId = viewModel.SelectedRoleId });
+            }
+            else
+            {
+                user.UserRoles.Add(new UserRole { RoleId = 2 }); 
+            }
+
+            await _userService.CreateUserAsync(user);
+            return RedirectToAction("Index", "Home");
         }
-        return View(user);
+
+        viewModel.Roles = await _context.Roles.ToListAsync();
+        return View(viewModel);
     }
 
-    // Dettagli di un cliente specifico
+
     [Authorize(Roles = "Admin")]
     [HttpGet]
     public async Task<IActionResult> UserDetails(int id)
@@ -54,7 +81,6 @@ public class UserController : Controller
         return View(user);
     }
 
-    // Ottieni tutti i clienti
     [Authorize(Roles = "Admin")]
     [HttpGet]
     public async Task<IActionResult> GetAllUsers()
@@ -63,7 +89,6 @@ public class UserController : Controller
         return View(users);
     }
 
-    // Mostra il form di modifica per un cliente
     [Authorize(Roles = "Admin")]
     [HttpGet]
     public async Task<IActionResult> UpdateUser(int id)
@@ -73,51 +98,60 @@ public class UserController : Controller
         {
             return NotFound();
         }
-        return View(user);
+
+        var roles = await _context.Roles.ToListAsync();
+        var viewModel = new UserViewModel
+        {
+            User = user,
+            Roles = roles
+        };
+
+        return View(viewModel);
     }
 
     [Authorize(Roles = "Admin")]
     [HttpPost]
-    public async Task<IActionResult> UpdateUser(int id, User updatedUserDetails)
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> UpdateUser(UserViewModel viewModel)
     {
         if (ModelState.IsValid)
         {
-            var user = await _userService.GetUserByIdAsync(id);
+            var user = await _userService.GetUserByIdAsync(viewModel.User.Id);
             if (user == null)
             {
                 return NotFound();
             }
 
-            // Aggiorna le proprietà necessarie
-            user.Name = updatedUserDetails.Name;
-            user.Email = updatedUserDetails.Email;
-            user.Password = updatedUserDetails.Password;
-            user.Roles = updatedUserDetails.Roles;
+            user.Name = viewModel.User.Name;
+            user.Email = viewModel.User.Email;
+            user.Password = viewModel.User.Password;
+
+            // Aggiorna i ruoli
+            user.UserRoles = viewModel.User.UserRoles;
 
             var updatedUser = await _userService.UpdateUserAsync(user);
-            return RedirectToAction("UserDetails", new { id = updatedUser.Id });
+            return RedirectToAction(nameof(UserDetails), new { id = updatedUser.Id });
         }
-        return View(updatedUserDetails);
+
+        viewModel.Roles = await _context.Roles.ToListAsync();
+        return View(viewModel);
     }
 
-    // Elimina un cliente
     [Authorize(Roles = "Admin")]
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteUser(int id)
     {
         await _userService.DeleteUserAsync(id);
-        return Ok();
+        return RedirectToAction(nameof(GetAllUsers));
     }
 
-    // Login
     [AllowAnonymous]
     [HttpGet]
     public IActionResult Login()
     {
         return View();
     }
-
-    //Login
 
     [AllowAnonymous]
     [HttpPost]
@@ -133,16 +167,14 @@ public class UserController : Controller
                 return View();
             }
 
-            // Crea i claim per l'utente
             var claims = new List<Claim>
-        {
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Name, user.Name),
-            new Claim(ClaimTypes.Email, user.Email)
-        };
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.Name),
+                new Claim(ClaimTypes.Email, user.Email)
+            };
 
-            // Aggiungi i ruoli come claim
-            claims.AddRange(user.Roles.Select(role => new Claim(ClaimTypes.Role, role.Name)));
+            claims.AddRange(user.UserRoles.Select(userRole => new Claim(ClaimTypes.Role, userRole.Role.Name)));
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var authProperties = new AuthenticationProperties
@@ -161,8 +193,6 @@ public class UserController : Controller
         }
     }
 
-
-    // Logout
     [Authorize]
     [HttpPost]
     [ValidateAntiForgeryToken]

@@ -13,6 +13,7 @@ namespace Esercizio_Pizzeria_In_Forno.Context
         public virtual DbSet<Role> Roles { get; set; }
         public virtual DbSet<Order> Orders { get; set; }
         public virtual DbSet<ProductToOrder> ProductToOrders { get; set; }
+        public virtual DbSet<UserRole> UserRoles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -21,21 +22,27 @@ namespace Esercizio_Pizzeria_In_Forno.Context
                 .Property(p => p.Price)
                 .HasColumnType("decimal(18,2)");
 
-            // Configura la relazione molti-a-molti tra User e Role
+            // Configura la chiave primaria composta per UserRole
+            modelBuilder.Entity<UserRole>()
+                .HasKey(ur => new { ur.UserId, ur.RoleId });
+
+            // Configura la relazione molti-a-molti tra User e Role attraverso UserRole
             modelBuilder.Entity<User>()
-                .HasMany(u => u.Roles)
-                .WithMany(r => r.Users)
-                .UsingEntity<Dictionary<string, object>>(
-                    "UserRole",
-                    j => j.HasOne<Role>().WithMany().HasForeignKey("RoleId"),
-                    j => j.HasOne<User>().WithMany().HasForeignKey("UserId"));
+                .HasMany(u => u.UserRoles)
+                .WithOne(ur => ur.User)
+                .HasForeignKey(ur => ur.UserId);
+
+            modelBuilder.Entity<Role>()
+                .HasMany(r => r.UserRoles)
+                .WithOne(ur => ur.Role)
+                .HasForeignKey(ur => ur.RoleId);
 
             // Configura la relazione tra Order e User
             modelBuilder.Entity<User>()
                 .HasOne(u => u.Order)
                 .WithMany(o => o.Users)
                 .HasForeignKey(u => u.OrderId)
-                .OnDelete(DeleteBehavior.SetNull); // Imposta l'azione da eseguire quando l'ordine viene eliminato
+                .OnDelete(DeleteBehavior.SetNull);
 
             // Configura la relazione tra Order e ProductToOrder
             modelBuilder.Entity<Order>()
@@ -49,13 +56,9 @@ namespace Esercizio_Pizzeria_In_Forno.Context
                 .WithMany()
                 .HasForeignKey(p => p.IdProduct);
 
-            // Configura la relazione tra ProductToOrder e Order
-            modelBuilder.Entity<ProductToOrder>()
-                .HasOne(p => p.Order)
-                .WithMany()
-                .HasForeignKey(p => p.IdOrder);
-
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.SeedRoles();
         }
     }
 }

@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Esercizio_Pizzeria_In_Forno.Models.ViewModels;
 
 namespace Esercizio_Pizzeria_In_Forno.Service
 {
@@ -154,5 +155,36 @@ namespace Esercizio_Pizzeria_In_Forno.Service
 
             await _context.SaveChangesAsync();
         }
+
+        public async Task<OrderDetailsViewModel> GetOrderDetailsAsync(int orderId)
+        {
+            var order = await _context.Orders
+                .Include(o => o.Products)
+                .ThenInclude(po => po.Product)
+                .FirstOrDefaultAsync(o => o.Id == orderId);
+
+            if (order == null)
+            {
+                return null;
+            }
+
+            var orderDetails = new OrderDetailsViewModel
+            {
+                OrderId = order.Id,
+                Products = order.Products.Select(po => new ProductDetailsViewModel
+                {
+                    ProductId = po.Product.Id,
+                    Name = po.Product.Name,
+                    Quantity = po.Quantity,
+                    Price = po.Product.Price,
+                    Total = po.Quantity * po.Product.Price
+                }).ToList()
+            };
+
+            orderDetails.TotalPrice = orderDetails.Products.Sum(p => p.Total);
+
+            return orderDetails;
+        }
+
     }
 }

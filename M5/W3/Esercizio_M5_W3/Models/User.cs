@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Esercizio_Pizzeria_In_Forno.Context;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Esercizio_Pizzeria_In_Forno.Models
@@ -16,6 +17,7 @@ namespace Esercizio_Pizzeria_In_Forno.Models
         public required string Password { get; set; }
         public int? OrderId { get; set; }
         public virtual Order Order { get; set; }
-        public virtual List<Role> Roles { get; set; } = [];
+        public virtual ICollection<UserRole> UserRoles { get; set; } = new HashSet<UserRole>();
+
     }
 }

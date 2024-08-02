@@ -36,14 +36,34 @@ namespace Esercizio_Pizzeria_In_Forno.Controllers
 
         // Dettagli di un ordine specifico
         [HttpGet]
-        public async Task<IActionResult> OrderDetails(int id)
+        public async Task<IActionResult> OrderDetails()
         {
-            var order = await _orderService.GetOrderByIdAsync(id);
-            if (order == null)
+            if (!User.Identity.IsAuthenticated)
             {
-                return NotFound();
+                return RedirectToAction("Login", "User");
             }
-            return View(order);
+
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            var orders = await _orderService.GetOrdersByUserIdAsync(userId);
+
+            if (orders == null || !orders.Any())
+            {
+                ViewBag.Message = "Non hai ancora ordinato niente, torna alla home per ordinare.";
+                return View("EmptyOrder");
+            }
+
+            var currentOrder = orders.FirstOrDefault(o => !o.Processed);
+
+            if (currentOrder == null)
+            {
+                ViewBag.Message = "Non hai ancora ordinato niente, torna alla home per ordinare.";
+                return View("EmptyOrder");
+            }
+
+            var orderDetails = await _orderService.GetOrderDetailsAsync(currentOrder.Id);
+
+            return View(orderDetails);
         }
 
         // Ottieni tutti gli ordini
@@ -105,4 +125,3 @@ namespace Esercizio_Pizzeria_In_Forno.Controllers
         }
     }
 }
-

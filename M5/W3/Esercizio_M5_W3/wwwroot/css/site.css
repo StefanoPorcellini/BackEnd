@@ -23,6 +23,18 @@ body {
   margin-bottom: 60px;
 }
 
+header {
+    background: rgba( 255, 255, 255, 0.1 );
+    box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+    backdrop-filter: blur( 1.5px );
+    -webkit-backdrop-filter: blur( 1.5px );
+    border: 1px solid rgba( 255, 255, 255, 0.18 );
+}
+
+.navbar {
+    background-color: transparent;
+}
+
 .flip-card {
     background-color: transparent;
     width: 350px;
@@ -169,7 +181,7 @@ h2   {
     justify-content: center;
     outline: none;
     cursor: pointer;
-    width: 150px;
+    width: 180px;
     height: 45px;
     background-image: linear-gradient(to top, #D8D9DB 0%, #fff 80%, #FDFDFD 100%);
     border-radius: 30px;
@@ -194,4 +206,6 @@ h2   {
         box-shadow: 0 4px 3px 1px #FCFCFC, 0 6px 8px #D6D7D9, 0 -4px 4px #CECFD1, 0 -6px 4px #FEFEFE, inset 0 0 5px 3px #999, inset 0 0 30px #aaa;
     }
 
-
+#logoPiccolo {
+    width: 250px;
+}

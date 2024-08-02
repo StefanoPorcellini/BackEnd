@@ -1,0 +1,37 @@
+﻿@model Esercizio_Pizzeria_In_Forno.Models.ViewModels.OrderDetailsViewModel
+
+@{
+    ViewData["Title"] = "Dettagli Ordine";
+}
+
+<h1>Dettagli Ordine</h1>
+
+@if (Model == null || !Model.Products.Any())
+{
+    <p>@ViewBag.Message</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Prodotto</th>
+                <th>Quantità</th>
+                <th>Prezzo Unitario</th>
+                <th>Totale</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in Model.Products)
+            {
+                <tr>
+                    <td>@product.Name</td>
+                    <td>@product.Quantity</td>
+                    <td>@product.Price.ToString("C")</td>
+                    <td>@product.Total.ToString("C")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <h3>Totale Speso: @Model.TotalPrice.ToString("C")</h3>
+}

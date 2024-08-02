@@ -1,43 +1,54 @@
 ﻿@model IEnumerable<Esercizio_Pizzeria_In_Forno.Models.Product>
 
 @{
-    ViewData["Title"] = "Tutti i Prodotti";
+    ViewData["Title"] = "Pizze";
 }
 
 <h1>@ViewData["Title"]</h1>
 
 <p>
-    <a asp-action="CreateProduct" class="btn btn-primary">Crea Nuovo Prodotto</a>
+    <a asp-action="CreateProduct" class="btn btn-primary">Crea una nuova pizza</a>
 </p>
 
-<div class="row">
-@foreach (var item in Model)
-{
-    <div class="col-md-4">
-        <div class="flip-card">
-            <div class="flip-card-inner">
-                <div class="flip-card-front">
-                        <img src="~/img/pizze/@item.Photo" alt="@item.Name" style="width:100%;height:200px;" />
-                    <p class="title">@item.Name</p>
-                    <p>@item.Price €</p>
-                    <p>@item.DeliveryTimeInMinutes minuti</p>
-                </div>
-                <div class="flip-card-back">
-                    <h4>@item.Name</h4>
-                    <p>@string.Join(", ", item.Ingredients.Select(i => i.Name))</p>
-                    <a asp-action="ProductDetails" asp-route-id="@item.Id" class="btn btn-info">Dettagli</a>
-                    <a asp-action="UpdateProduct" asp-route-id="@item.Id" class="btn btn-warning">Modifica</a>
-                    <form asp-action="DeleteProduct" asp-route-id="@item.Id" method="post" style="display:inline;">
-                        <button type="submit" class="btn btn-danger">Elimina</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Photo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DeliveryTimeInMinutes)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Photo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DeliveryTimeInMinutes)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
 }
-</div>
-
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+    </tbody>
+</table>

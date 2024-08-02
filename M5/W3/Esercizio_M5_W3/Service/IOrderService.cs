@@ -1,4 +1,5 @@
 ﻿using Esercizio_Pizzeria_In_Forno.Models;
+using Esercizio_Pizzeria_In_Forno.Models.ViewModels;
 
 namespace Esercizio_Pizzeria_In_Forno.Service
 {
@@ -11,5 +12,6 @@ namespace Esercizio_Pizzeria_In_Forno.Service
         Task<Order> UpdateOrderAsync(Order order);
         Task DeleteOrderAsync(int orderId);
         Task AddToOrderAsync(int userId, int productId);
+        Task<OrderDetailsViewModel> GetOrderDetailsAsync(int orderId);
     }
 }
